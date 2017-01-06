@@ -10,8 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4d00731b-3fab-46ba-84a0-620e807e1e06" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/coursework.exe" afterPath="$PROJECT_DIR$/coursework.exe" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/coursework.cpp" afterPath="$PROJECT_DIR$/coursework.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -81,11 +80,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pacman.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pacman.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pacman.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-3503">
               <caret line="41" column="22" lean-forward="false" selection-start-line="41" selection-start-column="22" selection-end-line="41" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" column="6" lean-forward="false" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -168,6 +177,7 @@
         <option value="$PROJECT_DIR$/ghosts.h" />
         <option value="$PROJECT_DIR$/pacman.h" />
         <option value="$PROJECT_DIR$/coursework.cpp" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -408,12 +418,12 @@
       <workItem from="1483545801828" duration="19358000" />
       <workItem from="1483571715724" duration="18331000" />
       <workItem from="1483636530494" duration="35226000" />
-      <workItem from="1483724742938" duration="3461000" />
+      <workItem from="1483724742938" duration="4338000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="100381000" />
+    <option name="totallyTimeSpent" value="101258000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -837,6 +847,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-3503">
           <caret line="41" column="22" lean-forward="false" selection-start-line="41" selection-start-column="22" selection-end-line="41" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="6" lean-forward="false" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="6" />
           <folding />
         </state>
       </provider>
