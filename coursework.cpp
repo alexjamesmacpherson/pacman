@@ -195,7 +195,7 @@ void checkCollisions()
  */
 void aiWave()
 {
-    bool waveChanged = false;
+    bool waveChanged = false;   // Flag to only update AI on a wave change - prevents constantly switching direction as wave is updated every tick
     movement thisWave = wave;
     if(ticks == 720 || ticks == 1920 || ticks == 3000 || ticks == 4100)
     {
@@ -216,11 +216,12 @@ void aiWave()
     }
 }
 
+/**
+ * Compute all game logic prior to redrawing anything
+ * Logic to compute varies on gamemode
+ */
 void idle()
 {
-    //std::cout << ticks << std::endl;
-
-    /// Handle game logic
     // Perform certain logic depending on game mode
     switch(mode)
     {
@@ -228,7 +229,7 @@ void idle()
             if(ticks > 240)
                 mode = PLAY;
             break;
-        case PLAY:
+        case PLAY:      // Main play loop
             if(timestamp == -1)         // If timestamp is not set, execute all PLAY-mode logic
             {
                 checkCollisions();      // Check Pacman's collisions with pills and ghosts
@@ -256,7 +257,7 @@ void idle()
                 }
             }
             break;
-        case EAT:
+        case EAT:       // Pause the game briefly on eating a ghost
             if(ticks == timestamp + 120)
             {
                 timestamp = -1;
@@ -278,10 +279,10 @@ void idle()
             break;
     }
 
-    /// Draw the current frame.
+    // Draw the current frame
     glutPostRedisplay();
 
-    /// Increment game ticks once the frame is drawn, but only if not paused
+    // Increment game ticks once the frame is drawn, but only if not paused
     if(mode != PAUSE)
         ticks++;
 }
@@ -308,6 +309,10 @@ void drawCharacters()
         ghosts[i].draw();
 }
 
+/**
+ * Draw all elements of the game, depending on the gamemode
+ * Common elements have been extracted to the above methods for simplicity of code
+ */
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);   // Clear display buffer colour
@@ -351,13 +356,20 @@ void display()
     glutSwapBuffers();
 }
 
-// Handle keyboard input
+
+/**
+ * Keyboard input handlers for all user input
+ *      keyboard() - handle normal key input (ie. letters, space bar, ESC key, etc.)
+ *      special() -  handle special key input (ie. arrow keys, etc.)
+ *
+ * @param key - key pressed by user
+ */
 void keyboard(unsigned char key, int, int) {
     switch (key) {
         case 27:    // Escape Key pauses/quits game
             if(mode != PAUSE)
             {
-                tempMode = mode;
+                tempMode = mode;    // Save gamemode to re-enter on unpausing game
                 mode = PAUSE;
             }
             else if(mode == PAUSE)
@@ -371,11 +383,10 @@ void keyboard(unsigned char key, int, int) {
             break;
     }
 }
-
-// Update Pacman's direction only when in PLAY-mode, otherwise pause/unpause or restart game
 void special(int key, int, int)
 {
-    if(mode == PLAY)
+    // Update Pacman's direction, pause/unpause or restart game depending on game mode
+    if(mode == PLAY || mode == EAT || mode == READY)    // Update direction if game is currently playable
     {
         switch (key)
         {
@@ -389,7 +400,7 @@ void special(int key, int, int)
     {
         switch(key)
         {
-            default:    // For any other key, unpause if mode=PAUSE or restart game if mode=GAMEOVER
+            default:    // For any special key input, unpause if mode=PAUSE or restart game if mode=GAMEOVER
                 if(mode == PAUSE && tempMode != GAMEOVER)
                     mode = tempMode;
                 else if(mode == GAMEOVER || mode == PAUSE)
@@ -399,7 +410,11 @@ void special(int key, int, int)
     }
 }
 
-// Pause the game (idle function) when minimised
+/**
+ * Handler to pause the game (halt the idle function) when minimised
+ *
+ * @param vis - window visibility, defined as a GLUT variable
+ */
 void visibility(int vis)
 {
     if (vis==GLUT_VISIBLE)
@@ -408,6 +423,9 @@ void visibility(int vis)
         glutIdleFunc(NULL);
 }
 
+/**
+ * Initialise the world and load and bind all textures
+ */
 void init()
 {
     glMatrixMode(GL_PROJECTION);
@@ -421,13 +439,18 @@ void init()
     loadBindTextures();                     // Load and bind all textures to be used later as sprites
 }
 
+/**
+ * Initialise the program, creating handlers for keyboard input and visibility (minimising the game)
+ * Calls the init() method to initialise the world and all textures
+ * Enters main loop, starting the game
+ */
 int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow("Pacman");
+    glutCreateWindow("Pac-Man");
     glutDisplayFunc(display);
 
     // Keyboard input handlers

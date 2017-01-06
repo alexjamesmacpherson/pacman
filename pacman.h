@@ -12,6 +12,12 @@ extern int pillsLeft;
 // Enum defines possible movement directions, defined as new type for usability
 typedef enum {NONE, UP, RIGHT, DOWN, LEFT} direction;
 
+
+/**
+ * For ease of reference and handling Pacman, he is defined as an object type
+ * All variables are private, not needing to be accessed externally
+ * If variables are externally required, getters and setters are provided
+ */
 class Pacman
 {
 private:
@@ -106,7 +112,7 @@ public:
      */
     bool atTileCenter()
     {
-        return (int)(y * 10.0f) % 10 == 0 && (int)(x * 10.0f) % 10 == 0;
+        return (int)round(y * 10.0f) % 10 == 0 && (int)round(x * 10.0f) % 10 == 0;
     }
 
     /**
@@ -282,11 +288,12 @@ public:
     }
 
     /**
-     * Restart Pacman's eating animation, resetting tempDir
+     * Restart Pacman's eating animation, resetting tempDir if it hasn't since been changed
      */
     void startChomping()
     {
-        tempDir = saveDir;
+        if(tempDir == NONE)
+            tempDir = saveDir;
         ready = true;
     }
 

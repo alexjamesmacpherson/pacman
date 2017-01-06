@@ -1,5 +1,5 @@
 # Pac-Man (CS324)
-Computer Graphics coursework, recreating Pac-Man in C++ using fundamental OpenGL and GLUT libraries.
+Computer Graphics coursework, recreating Pac-Man in C++ from OpenGL first principles.
 
 ## Dependencies
 There are a couple of dependencies required to compile and run the project.

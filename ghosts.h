@@ -17,10 +17,15 @@ typedef enum {CHASE, SCATTER, FRIGHTENED, DEAD, LEAVE, SPAWN} movement;
 extern movement wave;   // Allow access of wave-defined AI targeting mode from main file
 // Direction enum already declared in Pacman.h; no need to redeclare type
 
+/**
+ * For ease of reference and handling ghosts, they are defined as an object type
+ * All variables are private, not needing to be accessed externally
+ * If variables are externally required, getters and setters are provided
+ */
 class Ghost
 {
 private:
-    /// List of private variables which Pacman uses
+    /// List of private variables which ghost uses
     float x;        // X position relative to map - float allows for smooth movement between tiles
     float x_init;   // Initial X position stored for later resets
     float y;        // Y position relative to map - float allows for smooth movement between tiles
@@ -105,7 +110,7 @@ public:
      */
     int getX()
     {
-        return floor(x + 0.5);
+        return round(x);
     }
 
     /**
@@ -115,7 +120,7 @@ public:
      */
     int getY()
     {
-        return floor(y + 0.5);
+        return round(y);
     }
 
     /**
@@ -141,15 +146,15 @@ public:
     }
 
     /**
-     * Determines whether Pacman is currently at the center of a tile
+     * Determines whether ghost is currently at the center of a tile
      * Expression basically validates that the first decimal point of each coordinate is a zero
-     * If each is a zero, Pacman is at the center of his tile
+     * If each is a zero, ghost is at the center of his tile
      *
      * @return - boolean, true if at center
      */
     bool atTileCenter()
     {
-        return (int)(y * 10.0f) % 10 == 0 && (int)(x * 10.0f) % 10 == 0;
+        return (int)round(y * 10.0f) % 10 == 0 && (int)round(x * 10.0f) % 10 == 0;
     }
 
     /**
@@ -232,26 +237,46 @@ public:
     {
         ai = newAI;
         reverse = switchDir;
+
+        // Some AI modes have additional cases to account for
         if(newAI == FRIGHTENED)
         {
-            timeout = 0;
-            setSpeed(50);
+            timeout = 0;        // FRIGHTENED mode requires a timeout to ensure ghosts don't remain FRIGHTENED indefinitely
+            setSpeed(50);       // FRIGHTENED ghosts also move at 50% speed
         }
         else if(newAI == DEAD)
         {
-            setSpeed(100);
-            drawScore = true;
+            setSpeed(200);      // DEAD ghosts move at 200% speed, racing back to the SPAWN pen
+            drawScore = true;   // Flag also ensures the score for eating a ghost is displayed during the short pause
         }
     }
 
     /**
-     * Set the speed of the ghost
+     * When setting the speed of a ghost, it is necessary to round the ghost's coordinates to the correct degree of precision
+     *
+     * Rounding prevents errors such as being unable to recognise the center of a tile or overshooting a junction when changing speeds
+     *      EXAMPLE CASE:   Ghost is travelling at 50% speed (FRIGHTENED) so increases position by 0.05 each tick
+     *                      Upon death, its speed is incremented to 200%, moving by 0.2 tiles each tick
+     *                      Suppose the ghost was eaten at x=12.05 - possible when moving at 50% speed
+     *                      Its position will now be unable to round to x=12.0 to ascertain it is at the center of a tile
+     *
+     * Because of cases like the above, position rounding is necessary when changing speeds
+     */
+    void roundPosition()
+    {
+        x = round(x / d_pos) * d_pos;
+        y = round(y / d_pos) * d_pos;
+    }
+
+    /**
+     * Set the speed of the ghost and round the position to account for movement precision inaccuracies
      *
      * @param percentage - Float representing speed. 100% sets d_pos=0.1f (normal playing speed)
      */
     void setSpeed(float percentage)
     {
         d_pos = percentage / 1000;
+        roundPosition();
     }
 
     /**
@@ -263,7 +288,7 @@ public:
         setSpeed(50);   // Set movement speed to 50%
         if((int)(y * 10.0f) % 10 == 5 && (int)(x * 10.0f) % 10 == 5 && isImpassible(getNextTile(dir)))
         {
-            switch(dir)
+            switch(dir) // Switch direction upon hitting a WALL
             {
                 case UP:
                     dir = DOWN;
@@ -287,22 +312,21 @@ public:
         if(y < 19 && dir != DOWN)
         {
             setSpeed(50);   // Set movement speed to 50%
-            if(x < 13.4)
+            if(x < 13.4)    // Move towards the center
                 dir = RIGHT;
             else if(x > 13.6)
                 dir = LEFT;
             else
-                dir = UP;
-        }
-        else if(y >= 19)
-        {
-            if(!atTileCenter())
             {
-                dir = LEFT;
-                setSpeed(100);
+                x = 13.5;   // Truly center position when center of pen is reached
+                dir = UP;   // Then set direction to move out of the SPAWN
             }
-            else
-                ai = wave;
+        }
+        else if(y >= 19)    // Once out of the SPAWN, act as a normal ghost
+        {
+            dir = LEFT;     // Begin heading LEFT
+            ai = wave;      // Enter the current AI wave
+            setSpeed(100);  // Ensure speed is correctly set to 100%
         }
         else if((int)(y * 10.0f) % 10 == 5 && isImpassible(getNextTile(dir)))
             dir = UP;
@@ -319,7 +343,7 @@ public:
     {
         float d_x = p1[0] - p2[0];
         float d_y = p1[1] - p2[1];
-        return sqrt((d_x * d_x) + (d_y * d_y));
+        return sqrt((d_x * d_x) + (d_y * d_y)); // Simple pythagorean calculation
     }
 
     /**
@@ -394,7 +418,7 @@ public:
     }
 
     /**
-     * SCATTER movement AI attempts to force all ghosts to diverge from one another
+     * SCATTER movement AI attempts to force all ghosts to disperse from one another
      * Each ghost is set to target a point outside the map (one in each of the four corners) based on their colour
      *
      * If left in SCATTER mode, this will cause each to loop around a small section of the map in a different corner
@@ -403,7 +427,7 @@ public:
     void aiScatter()
     {
         std::vector<int> target;
-        switch(colour)
+        switch(colour)              // Each colour selects a unique corner to target
         {
             case RED:
                 target = {25, 33}; break;
@@ -415,19 +439,19 @@ public:
                 target = {0, -2}; break;
         }
         dir = targetTile(target);   // Set direction at junction to head towards SCATTER point
-        setSpeed(100);              // Set movement speed to 100%
+        setSpeed(100);              // Ensure movement speed is set to 100%
     }
 
     /**
-     * Calculate an target as Pacman +- an offset of given size in Pacman's direction of movement
+     * Calculate a target as Pacman's position +- an offset of given size in Pacman's direction of movement
      *
      * @param offsetSize - Size of offset to apply
      * @return -           New target vector, accounting for offset
      */
-    std::vector<int> pacmanDirectionalOffset(int offsetSize)
+    std::vector<int> targetPacmanOffsetBy(int offsetSize)
     {
         std::vector<int> offset = {pacman.getX(), pacman.getY()};
-        switch(pacman.getDirection())
+        switch(pacman.getDirection())   // Apply offset to correct coordinate based on Pacman's direction
         {
             case UP:
                 offset[1] += offsetSize;
@@ -442,7 +466,7 @@ public:
                 offset[0] -= offsetSize;
                 break;
         }
-        return offset;
+        return offset;  // Return the new target vector, accounting for the offset
     }
 
     /**
@@ -466,13 +490,13 @@ public:
         // Determine ghost chasing behaviour based on their colour
         switch(colour)
         {
-            case PINK:                                  // PINK looks ahead of Pacman and tries to ambush him
-                target = pacmanDirectionalOffset(4);    // Update target to reflect offset in Pacman's direction of movement
+            case PINK:                              // PINK looks ahead of Pacman and tries to ambush him
+                target = targetPacmanOffsetBy(4);   // Update target to reflect offset in Pacman's direction of movement
                 break;
             case BLUE:
-                target = pacmanDirectionalOffset(2);    // Start by finding the point 2 tiles ahead of Pacman in his direction of movement
-                d_x = redGhost.getX() - target[0];      // Find the X difference between this point and RED ghost
-                d_y = redGhost.getY() - target[1];      // Find the Y difference between this point and RED ghost
+                target = targetPacmanOffsetBy(2);   // Start by finding the point 2 tiles ahead of Pacman in his direction of movement
+                d_x = redGhost.getX() - target[0];  // Find the X difference between this point and RED ghost
+                d_y = redGhost.getY() - target[1];  // Find the Y difference between this point and RED ghost
                 // BLUE's target is then twice the change in X and Y from RED's position
                 target = {redGhost.getX() + 2 * d_x, redGhost.getY() + 2 * d_y};
                 break;
@@ -500,45 +524,74 @@ public:
         setSpeed(50);   // Set movement speed to 50%
     }
 
+    /**
+     * DEAD mode AI races back to the SPAWN pen at 200% speed
+     */
     void aiDead()
     {
-        std::vector<int> target = {14, 19};
+        std::vector<int> target = {14, 19};     // Coordinate directly above SPAWN entrance
         dir = targetTile(target);
-        setSpeed(100);
+        setSpeed(200);
     }
 
+    /**
+     * On each call to move(), there are a number of special cases which must be assessed prior to any other logic being computed
+     *
+     * If a timeout is set, the ghost is (or was) in FRIGHTENED mode:
+     *      If the timeout exceeds 600 ticks, exit FRIGHTENED (if still in it) and enter the correct wave AI type
+     *      Also reset timeout and ghostsEaten count
+     *      Otherwise, increment the timeout counter every tick
+     *
+     * If the ghost is DEAD, check its current position
+     *      If directly above the SPAWN pen, correctly center X coordinate and begin entering the pen at 50% speed
+     *      Once within the pen, set AI mode to LEAVE, allowing the ghost to 'respawn'
+     *
+     * These cases are checked every tick that move() is called
+     */
     void checkSpecialCases()
     {
-        if(timeout >= 600)
+        if(timeout >= 600)      // Timeout exceeds max time to be in FRIGHTENED mode
         {
             if(ai == FRIGHTENED)
             {
-                ai = wave;
-                setSpeed(100);
+                ai = wave;      // If FRIGHTENED, enter wave-based AI
+                setSpeed(100);  // Ensure speed is correctly reset to 100%
             }
-            timeout = -1;
-            ghostsEaten = 0;
+            timeout = -1;       // Reset timeout
+            ghostsEaten = 0;    // Reset eaten ghosts count to zero as effects of big pill have ended - score bonus should not carry
         }
-        else if(timeout != -1)
+        else if(timeout != -1)  // If not at max timeout, increment counter
             timeout++;
 
         if(ai == DEAD)
         {
-            if(x > 13.4 && x < 13.6)
+            if(x >= 13.4 && x <= 13.6)  // Check X position to check centrality
             {
-                if(getY() == 19)
+                if(getY() == 19)    // Check ghost is also directly above the SPAWN pen
                 {
-                    dir = DOWN;
+                    x = 13.5;       // Correctly center X coordinate
+                    dir = DOWN;     // Set ghost to enter the SPAWN pen
                     setSpeed(50);
                 }
-                else if(getY() <= 17 && getY() > 15)
+                else if(getY() < 17 && getY() >= 15)
                 {
-                    ai = LEAVE;
+                    ai = LEAVE;     // Once far enough into the pen, set AI to LEAVE to 'respawn' the ghost
                 }
             }
         }
     }
 
+    /**
+     * Method handles all ghost movement functionality
+     * Direction changes at junctions and corners handled by calling the correct method as per the current AI mode
+     * Special movement cases are also checked every tick
+     *
+     * If not at a junction or corner, increment position in the current direction of movement by d_pos
+     *      d_pos: change in position, based on speed
+     * While moving along an axis, the unchanging axis is rounded to prevent mishaps with discerning tile centrality
+     *
+     * @param redGhost - RED ghost object is passed through the move method to CHASE mode AI for the BLUE ghost's targeting
+     */
     void move(Ghost redGhost)
     {
         checkSpecialCases();
