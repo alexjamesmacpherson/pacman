@@ -8,11 +8,11 @@ There are a couple of dependencies required to compile and run the project.
 
 ## Compiling the Project
 #### Windows:
-The project was developed on Windows, requiring MingW64 (Git BASH) to both compile and run.
+The project was developed on Windows, requiring MingW64 (Git BASH) to both compile and run. To compile the project:
 > make -f Makefile coursework
 
 #### Linux:
-A slightly modified Makefile is required to compile on Linux.
+A slightly modified Makefile is required to compile on Linux:
 > make -f Makefile.linux coursework
 
 ## Running the Project:
