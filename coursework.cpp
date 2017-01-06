@@ -234,7 +234,7 @@ void idle()
                 checkCollisions();      // Check Pacman's collisions with pills and ghosts
                 pacman.move();          // Move Pacman
                 aiWave();               // Update the ghost AI targeting wave
-                for(int i = 0; i < 0; i++)
+                for(int i = 0; i < 4; i++)
                     ghosts[i].move(ghosts[0]);  // Move each ghost - pass RED ghost for BLUE's CHASE mode AI
             }
             else

@@ -1,0 +1,14 @@
+LDLIBS = -lglut -lGL -lGLU  -lm -lpng -lX11
+
+CXXFLAGS= -O3  -std=c++11 -I/modules/cs324/glew-1.11.0/include
+LDFLAGS= $(CXXFLAGS) $(LIBDIRS) -L/usr/X11R6/lib -L/modules/cs324/glew-1.11.0/lib -Wl,-rpath=/modules/cs324/glew-1.11.0/lib
+
+TARGETS = 
+
+SRCS = 
+
+OBJS =  $(SRCS:.cpp=.o)
+
+CXX = g++
+
+default: $(TARGETS)
