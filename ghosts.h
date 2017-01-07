@@ -242,7 +242,7 @@ public:
         if(newAI == FRIGHTENED)
         {
             timeout = 0;        // FRIGHTENED mode requires a timeout to ensure ghosts don't remain FRIGHTENED indefinitely
-            setSpeed(50);       // FRIGHTENED ghosts also move at 50% speed
+            setSpeed(40);       // FRIGHTENED ghosts also move at 50% speed
         }
         else if(newAI == DEAD)
         {
@@ -521,7 +521,7 @@ public:
         } while(isImpassible(getNextTile(newDir)));                 // Ensure random direction is traversible
 
         dir = newDir;   // Set new direction
-        setSpeed(50);   // Set movement speed to 50%
+        setSpeed(40);   // Set movement speed to 50%
     }
 
     /**
