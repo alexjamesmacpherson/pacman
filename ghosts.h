@@ -594,6 +594,7 @@ public:
      */
     void move(Ghost redGhost)
     {
+        // Check any special case AI behaviour
         checkSpecialCases();
 
         // Handle special case movement behaviours

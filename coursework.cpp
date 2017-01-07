@@ -15,6 +15,7 @@
 #include <iostream>
 #include <png.h>
 #include <vector>
+#include <fstream>
 
 // Lab header files
 #include "png_load.h"
@@ -234,6 +235,7 @@ void idle()
             {
                 checkCollisions();      // Check Pacman's collisions with pills and ghosts
                 pacman.move();          // Move Pacman
+                checkCollisions();      // Check collisions again to ensure simultaneous tile switches register correct collisions
                 aiWave();               // Update the ghost AI targeting wave
                 for(int i = 0; i < 4; i++)
                     ghosts[i].move(ghosts[0]);  // Move each ghost - pass RED ghost for BLUE's CHASE mode AI
@@ -269,7 +271,14 @@ void idle()
             if(ticks > timestamp + 180)
             {
                 if(lives == 0)
+                {
                     mode = GAMEOVER;
+                    if(score > highscore)
+                    {
+                        highscore = score;
+                        setHighscore();
+                    }
+                }
                 else
                 {
                     lives--;    // Decrease remaining lives on death
@@ -437,6 +446,7 @@ void init()
     gluOrtho2D(0, 300, 0, 300);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);   // Set background to black
     loadBindTextures();                     // Load and bind all textures to be used later as sprites
+    getHighscore();
 }
 
 /**

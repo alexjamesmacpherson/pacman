@@ -1,5 +1,5 @@
 /**
- * Header file responsible for drawing all UI elements.
+ * Header file responsible for drawing all UI elements. Also reads/writes high score to file.
  */
 
 #ifndef COURSEWORK_UI_H
@@ -9,6 +9,9 @@
 extern int score;
 extern int level;
 extern int lives;
+
+// Initialise high score as integer to be set on init()
+int highscore;
 
 /**
  * Draw READY! tooltip, which is displayed prior to the game playing
@@ -45,6 +48,8 @@ void drawGameover()
  */
 void drawNumberAsSprite(int number)
 {
+    glPushMatrix();
+
     std::string str = std::to_string(number);   // Convert number to string to allow iteration
     for(int i = str.length() - 1; i >= 0; i--)  // Draw each digit as an individual sprite
     {
@@ -86,20 +91,25 @@ void drawNumberAsSprite(int number)
     // If number is a single digit, justify with another zero
     if(str.length() == 1)
         drawSprite(num_0_tex, 8, 8, 0);
+
+    glPopMatrix();
 }
 
 /**
- * Draw game score
+ * Draw game score and any previously attained high score
  */
 void drawScore()
 {
     glPushMatrix();
 
     translateMapOrigin();               // Translate to map origin
-    translateMapCoords(9,32.5);         // Translate to point above map at which the score tooltip should be drawn
-    drawSprite(score_tex, 40, 8, 0);    // Draw SCORE tooltip at current location
+    translateMapCoords(6.5,32.5);       // Translate to point above map at which the score tooltip should be drawn
+    drawSprite(score_tex, 80, 8, 0);    // Draw SCORE tooltip at current location
 
-    translateMapCoords(5,-1);           // Translate to point above map at which the score should be drawn
+    translateMapCoords(4,-1);           // Translate to point above map at which the high score should be drawn
+    drawNumberAsSprite(highscore);      // Draw high score sprites at current location
+
+    translateMapCoords(6,0);            // Translate to point above map at which the score should be drawn
     drawNumberAsSprite(score);          // Draw score sprites at current location
 
     glPopMatrix();
@@ -182,6 +192,35 @@ void drawQuit()
     drawSprite(quit_tex, 64, 8, 0);     // Draw QUIT tooltip at current location
 
     glPopMatrix();
+}
+
+/**
+ * Get high score from locally stored file - if no such file exists, create file with value=0
+ */
+void getHighscore()
+{
+    std::fstream file("highscore.txt");
+    if(file.good())
+        file >> highscore;
+    else
+    {
+        std::ofstream newFile("highscore.txt");
+        newFile << 0;
+        newFile.close();
+    }
+    file.close();
+
+}
+
+/**
+ * Write high score to file, allowing persistence after quitting the game - if file does not already exist, create it
+ */
+void setHighscore()
+{
+    std::ofstream file("highscore.txt");
+    file.clear();
+    file << highscore;
+    file.close();
 }
 
 #endif //COURSEWORK_UI_H
