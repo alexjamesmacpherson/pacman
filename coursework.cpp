@@ -39,12 +39,14 @@ int ticks = 0;
  */
 int timestamp = -1;
 
-// Game score, level, remaining lives, extra life flag and remaining pills to be eaten all initialised
+// Game score, level, remaining lives, extra life flag, remaining pills to be eaten, number of fruits consumed and fruit spawned flag all initialised
 int score = 0;
 int level = 0;
 int lives = 2;
 bool extraLife = false; // True if received
 int pillsLeft = 244;
+int fruits = 0;
+bool fruitSpawned = false;
 
 // Ghost AI targeting is wave-based, varying between CHASE and SCATTER over time
 movement wave = SCATTER;
@@ -67,20 +69,21 @@ Ghost ghosts[4] =
  * Game modes defined as enum:
  *      READY:    Set game to starting state, display READY! text until game begins
  *      PLAY:     Game is in play
- *      EAT:      Pause game briefly during play upon eating a ghost
+ *      FRUIT:    Pause game briefly during play upon eating a fruit
+ *      EAT:      Pause game briefly during play upon eating a ghost - the two differ only in what is drawn
  *      PAUSE:    Game is paused, draw help screen
  *      DEATH:    Pacman has been eaten, play death sequence
  *      GAMEOVER: Game is over, display GAME OVER text until quit/restart
  * Gamemode is defined as new type for ease of use.
  * Default starting mode is READY
  */
-typedef enum {READY, PLAY, EAT, PAUSE, DEATH, GAMEOVER} gamemode;
+typedef enum {READY, PLAY, FRUIT, EAT, PAUSE, DEATH, GAMEOVER} gamemode;
 gamemode mode = READY;
 gamemode tempMode;      // Save gamemode when pausing the game
 
 /**
  * Reset level:
- *      Set ticks, timestamp and eaten ghost count to initial values
+ *      Set ticks, timestamp, eaten ghost count and fruit spawned flag to initial values
  *      Call reset() method on Pacman and all Ghosts
  *      Enter READY mode
  * This function is called when advancing level, resetting a level on death, or when restarting the game
@@ -92,6 +95,7 @@ void resetLevel()
     pacman.reset();
     wave = SCATTER;
     ghostsEaten = 0;
+    fruitSpawned = false;
     for(int i = 0; i < 4; i++)
         ghosts[i].reset();
     mode = READY;
@@ -109,6 +113,7 @@ void restartGame()
     lives = 2;
     extraLife = false;
     pillsLeft = 244;
+    fruits = 0;
     resetMap();
     resetLevel();
 }
@@ -120,6 +125,7 @@ void restartGame()
  *       - Once score exceeds 10,000, award a bonus life
  *       - On eating a big pill, set ghosts to FRIGHTENED
  *       - Release ghosts from the SPAWN pen after a specific number of pills have been eaten
+ *       - If a fruit is eaten, pause the game briefly to display the score for eating it
  *      Check whether Pacman has collided with a ghost
  *       - Set mode=DEATH if collision has occurred with alive ghost
  *       - If the ghost is frightened, eat it (set AI=DEAD)
@@ -130,13 +136,19 @@ void checkCollisions()
     int scoreIncrement = pacman.eat();
     score += scoreIncrement;
 
-    if(scoreIncrement == 50)
+    if(scoreIncrement == 50)        // If score is increased by 50, a big pill has been eaten - set ghosts to FRIGHTENED
     {
         for(int i = 0; i < 4; i++)
         {
             if(ghosts[i].getAI() == wave || ghosts[i].getAI() == FRIGHTENED)
                 ghosts[i].setAI(FRIGHTENED, true);
         }
+    }
+    else if(scoreIncrement >= 100)  // If score is increased by more than 100, a fruit has been eaten, pause game briefly to show score
+    {
+        timestamp = ticks;
+        pacman.stopChomping();
+        mode = FRUIT;
     }
 
     // Award extra life for reaching 10000 points
@@ -173,7 +185,7 @@ void checkCollisions()
             else if(ghosts[i].getAI() == FRIGHTENED)    // If ghost is FRIGHTENED, it can be eaten itself
             {                                           // Set ghost AI to DEAD, increasing the score and count of ghosts eaten since the last big pill
                 ghosts[i].setAI(DEAD, false);            // Briefly pause the game to show score for eating ghost
-                score += 200 * pow(2, min(ghostsEaten++, 4));
+                score += 200 * pow(2, min(ghostsEaten++, 3));
                 timestamp = ticks;
                 pacman.stopChomping();
                 mode = EAT;
@@ -238,8 +250,12 @@ void idle()
                 pacman.move();          // Move Pacman
                 checkCollisions();      // Check collisions again to ensure simultaneous tile switches register correct collisions
                 aiWave();               // Update the ghost AI targeting wave
+                // Move each ghost - pass RED ghost for BLUE's CHASE mode AI
                 for(int i = 0; i < 4; i++)
-                    ghosts[i].move(ghosts[0]);  // Move each ghost - pass RED ghost for BLUE's CHASE mode AI
+                    ghosts[i].move(ghosts[0]);
+                // If no fruit is currently spawned, enough pills have been eaten and a random quantifier is satisfied, spawn a fruit
+                if(!fruitSpawned && pillsLeft <= 240 - 30 &&  rand() % 1000 == 0)
+                    spawnFruit();
             }
             else
             {
@@ -260,7 +276,8 @@ void idle()
                 }
             }
             break;
-        case EAT:       // Pause the game briefly on eating a ghost
+        case FRUIT:     // Pause the game briefly on eating a fruit
+        case EAT:       // Also pause on eating a ghost - logical behaviour is identical so overflow switch case
             if(ticks == timestamp + 120)
             {
                 timestamp = -1;
@@ -282,8 +299,9 @@ void idle()
                 }
                 else
                 {
-                    lives--;    // Decrease remaining lives on death
-                    resetLevel();
+                    lives--;        // Decrease remaining lives on death
+                    resetFruit();   // Remove any spawned fruits
+                    resetLevel();   // Reset characters and variables to retry level
                 }
             }
             break;
@@ -306,6 +324,7 @@ void drawPlayScreen()
     drawLevel();
     drawScore();
     drawLives();
+    drawFruits();
     drawHelp();
 }
 
@@ -341,6 +360,12 @@ void display()
             drawPlayScreen();
             drawCharacters();
             break;
+        case FRUIT:
+            drawPlayScreen();
+            for(int i = 0; i < 4; i++)
+                ghosts[i].draw();
+            pacman.drawFruitScore();
+            break;
         case EAT:
             drawPlayScreen();
             for(int i = 0; i < 4; i++)
@@ -351,6 +376,7 @@ void display()
             drawLevel();
             drawScore();
             drawLives();
+            drawFruits();
             drawQuit();
             break;
         case DEATH:

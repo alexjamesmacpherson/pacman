@@ -44,6 +44,9 @@ unsigned int eye_u_tex;         // Eyes facing UP
 unsigned int eye_r_tex;         // Eyes facing RIGHT
 unsigned int eye_d_tex;         // Eyes facing DOWN
 unsigned int eye_l_tex;         // Eyes facing LEFT
+// Fruit Textures
+unsigned int fruits_tex[8];     // Array storing all fruit textures
+unsigned int f_score_tex[8];    // Array storing all fruit score textures
 // UI Textures
 unsigned int num_0_tex;         // Number 0
 unsigned int num_1_tex;         // Number 1
@@ -117,6 +120,23 @@ void loadBindTextures()
     eye_r_tex =         load_and_bind_texture("sprites/eyes/r.png");
     eye_d_tex =         load_and_bind_texture("sprites/eyes/d.png");
     eye_l_tex =         load_and_bind_texture("sprites/eyes/l.png");
+    // Bind fruit textures
+    fruits_tex[0] =     load_and_bind_texture("sprites/fruits/cherry.png");
+    fruits_tex[1] =     load_and_bind_texture("sprites/fruits/strawberry.png");
+    fruits_tex[2] =     load_and_bind_texture("sprites/fruits/orange.png");
+    fruits_tex[3] =     load_and_bind_texture("sprites/fruits/apple.png");
+    fruits_tex[4] =     load_and_bind_texture("sprites/fruits/melon.png");
+    fruits_tex[5] =     load_and_bind_texture("sprites/fruits/boss.png");
+    fruits_tex[6] =     load_and_bind_texture("sprites/fruits/bell.png");
+    fruits_tex[7] =     load_and_bind_texture("sprites/fruits/key.png");
+    f_score_tex[0] =    load_and_bind_texture("sprites/ui/100.png");
+    f_score_tex[1] =    load_and_bind_texture("sprites/ui/300.png");
+    f_score_tex[2] =    load_and_bind_texture("sprites/ui/500.png");
+    f_score_tex[3] =    load_and_bind_texture("sprites/ui/700.png");
+    f_score_tex[4] =    load_and_bind_texture("sprites/ui/1000.png");
+    f_score_tex[5] =    load_and_bind_texture("sprites/ui/2000.png");
+    f_score_tex[6] =    load_and_bind_texture("sprites/ui/3000.png");
+    f_score_tex[7] =    load_and_bind_texture("sprites/ui/5000.png");
     // Bind UI textures
     num_0_tex =         load_and_bind_texture("sprites/ui/0.png");
     num_1_tex =         load_and_bind_texture("sprites/ui/1.png");

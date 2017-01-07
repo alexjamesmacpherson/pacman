@@ -5,9 +5,11 @@
 #ifndef COURSEWORK_PACMAN_H
 #define COURSEWORK_PACMAN_H
 
-// Allow access of ticks and count of remaining pills from main file
+// Allow access of ticks, count of remaining pills, number of fruits eaten and fruit spawned flag from main file
 extern int ticks;
 extern int pillsLeft;
+extern int fruits;
+extern bool fruitSpawned;
 
 // Enum defines possible movement directions, defined as new type for usability
 typedef enum {NONE, UP, RIGHT, DOWN, LEFT} direction;
@@ -200,6 +202,7 @@ public:
      * "Eat" the current tile:
      *      Pill: empty the array position appropriately, reduce remaining pill count and return score
      *      Portal: teleport to the opposite portal based on Pacman's direction of movement
+     *      Fruit: increment consumed fruit count, empty array position and determine & return how much the fruit is worth
      * Only eat current tile if at tile center
      *
      * @return - integer score increment from eating tile
@@ -224,6 +227,28 @@ public:
                     else
                         x = 26;
                     return 0;
+                case F:
+                    setTile(getX(),getY(),e);
+                    fruitSpawned = false;
+                    switch(fruits++)
+                    {
+                        case 0:
+                            return 100;
+                        case 1:
+                            return 300;
+                        case 2:
+                            return 500;
+                        case 3:
+                            return 700;
+                        case 4:
+                            return 1000;
+                        case 5:
+                            return 2000;
+                        case 6:
+                            return 3000;
+                        case 7:
+                            return 5000;
+                    }
             }
         }
         return 0;
@@ -342,6 +367,23 @@ public:
 
         // Increment dead texture counter
         dead_tex_count++;
+
+        glPopMatrix();
+    }
+
+    /**
+     * Upon eating a fruit, draw the score for eating said fruit during the short pause INSTEAD of drawing Pacman
+     */
+    void drawFruitScore()
+    {
+        glPushMatrix();
+
+        translateMapOrigin();               // Translate to map origin
+        translateMapCoords(x,y);            // Translate to current (x,y)
+        glTranslatef(-6.0f, 0.0f, 0.0f);   // Account for over-sized sprite (20x8 on 8x8 tile)
+
+        // Determine which fruit score texture to draw based on how many fruits have been eaten
+        drawSprite(f_score_tex[fruits - 1], 20, 8, 0);
 
         glPopMatrix();
     }

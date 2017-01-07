@@ -8,8 +8,10 @@
 #ifndef COURSEWORK_MAP_H
 #define COURSEWORK_MAP_H
 
-// Allow access of ticks from main file
+// Allow access of ticks and fruit count from main file
 extern int ticks;
+extern int fruits;
+extern bool fruitSpawned;
 
 /**
  * Tile types defined as enum:
@@ -21,10 +23,11 @@ extern int ticks;
  *      e: Eaten Pill
  *      O: Big Pill
  *      E: Eaten Big Pill
+ *      F: Fruit
  * Tile is defined as new type for ease of use.
  * Each tile-type is used to determine behaviour of Pacman & Ghosts.
  */
-typedef enum {W, G, P, n, o, e, O, E} tile;
+typedef enum {W, G, P, n, o, e, O, E, F} tile;
 
 /// TILES: 8x8, SPRITES: 14x14, MAP: 224x248, WINDOW: 300x300 - map starts at (38,26), ends at (262,274)
 // 2D tile array stores game map
@@ -124,6 +127,7 @@ void resetMap()
         {
             switch(getTile(x,y))
             {
+                case F:     // Fruits only spawn on empty pill tiles, not empty big pill tiles - if it still exists on map reset, reset to pill
                 case e:
                     setTile(x,y,o); break;
                 case E:
@@ -131,6 +135,57 @@ void resetMap()
             }
         }
     }
+}
+
+/**
+ * When Pacman dies, remove any spawned fruits from the map
+ */
+void resetFruit()
+{
+    for(int x=0;x<28;x++)
+    {
+        for(int y=0;y<31;y++)
+        {
+            switch(getTile(x,y))
+            {
+                case F:     // Fruits only spawn on empty pill tiles, not empty big pill tiles - if it still exists on map reset, reset to pill
+                    setTile(x,y,e); break;
+            }
+        }
+    }
+}
+
+/**
+ * Randomly spawn a fruit in the lower third of the map
+ */
+void spawnFruit()
+{
+    int x;
+    int y;
+    do
+    {
+        x = rand() % 27 + 1;    // Generate random X within the map (excluding outer walls)
+        y = rand() % 10 + 1;    // Generate random Y within the lower third of the map (excluding outer walls)
+    } while(getTile(x,y) != e); // Randomly selected tile must be empty
+
+    // Once randomly selected tile is empty, spawn fruit
+    setTile(x,y,F);
+    fruitSpawned = true;
+}
+
+/**
+ * Determine which fruit to draw based on how many have already been consumed
+ */
+void drawFruit(int x, int y)
+{
+    glPushMatrix();
+
+    glTranslatef(-3.0f, -3.0f, 0.0f);   // Account for over-sized sprite (14x14 on 8x8 tile)
+
+    // Determine which fruit sprite to draw from the array based on current fruit consumption count
+    drawSprite(fruits_tex[fruits], 14, 14, 0);   // Draw fruit at current location
+
+    glPopMatrix();
 }
 
 /**
@@ -151,11 +206,13 @@ void drawMap()
             switch(getTile(x,y))           // Draw pills as sprites
             {
                 case o:
-                    drawSprite(pill_tex, 8, 8, 0);    break;
+                    drawSprite(pill_tex, 8, 8, 0); break;
                 case O:
                     if(ticks % 60 < 30)     // Set big pill sprite to flash depending on ticks
                         drawSprite(bigPill_tex, 8, 8, 0);
                     break;
+                case F:
+                    drawFruit(x,y); break;  // Determine which fruit should be drawn at current location
             }
             translateMapCoords(0,1);    // Increment Y pos
         }

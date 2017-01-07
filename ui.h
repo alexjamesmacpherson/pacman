@@ -5,10 +5,11 @@
 #ifndef COURSEWORK_UI_H
 #define COURSEWORK_UI_H
 
-// Allow access of score, level and lives from main file
+// Allow access of score, level, lives and fruits consumed from main file
 extern int score;
 extern int level;
 extern int lives;
+extern int fruits;
 
 // Initialise high score as integer to be set on init()
 int highscore;
@@ -140,7 +141,7 @@ void drawLives()
     glPushMatrix();
 
     translateMapOrigin();                   // Translate to map origin
-    translateMapCoords(3,-2);               // Translate to point beneath map, from which lives should be drawn
+    translateMapCoords(1,-2.5);             // Translate to point beneath map, from which lives should be drawn
     for(int i = 0; i < lives; i++)
     {
         drawSprite(life_tex, 14, 14, 0);    // Draw life counter sprite at current location
@@ -221,6 +222,24 @@ void setHighscore()
     file.clear();
     file << highscore;
     file.close();
+}
+
+/**
+ * Draw the fruits Pacman has already eaten, displayed beneath the map
+ */
+void drawFruits()
+{
+    glPushMatrix();
+
+    translateMapOrigin();                       // Translate to map origin
+    translateMapCoords(25,-2.5);                // Translate to point beneath map, from which lives should be drawn
+    for(int i = 0; i < fruits; i++)
+    {
+        drawSprite(fruits_tex[i], 14, 14, 0);   // Draw life counter sprite at current location
+        translateMapCoords(-2,0);               // Translate to right where next life counter sprite should be drawn
+    }
+
+    glPopMatrix();
 }
 
 #endif //COURSEWORK_UI_H
