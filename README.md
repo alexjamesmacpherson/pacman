@@ -20,12 +20,17 @@ Once the code is compiled, the game is started using the same command on all sys
 > ./coursework
 
 ## Playing the Game:
-The game is controlled by keyboard input only.
-* Arrow keys to move
-* ESC key to pause game and view help screen
-* ESC key from pause screen to quit
-* Any key from pause screen to resume
-* Any key from game over screen to restart
+1. The game is controlled by keyboard input only:
+  * Arrow keys to move
+  * ESC key to pause game and view help screen
+  * Any key from pause screen to resume
+  * ESC key from pause screen to quit
+  * Any key from game over screen to restart
+2. Don't let the ghosts catch you or you'll lose a life
+3. Gobble pills and fruits to increase your score
+4. Eat big pills to scare the ghosts, then you can consume THEM - every ghost you eat before the timer runs out increases the score multiplier
+5. Eat all the pills to advance to the next level
+6. When you have no lives left, the game is over and your highest score is saved to a file
 
 ## Note:
 **I don't own, nor claim to own, Pac-Man.**
