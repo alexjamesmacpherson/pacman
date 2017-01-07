@@ -253,8 +253,9 @@ void idle()
                 // Move each ghost - pass RED ghost for BLUE's CHASE mode AI
                 for(int i = 0; i < 4; i++)
                     ghosts[i].move(ghosts[0]);
-                // If no fruit is currently spawned, enough pills have been eaten and a random quantifier is satisfied, spawn a fruit
-                if(!fruitSpawned && pillsLeft <= 240 - 30 &&  rand() % 1000 == 0)
+                // If no fruit is currently spawned, enough pills have been eaten,
+                // The eaten fruit count doesn't exceed the level and a random quantifier is satisfied, spawn a fruit
+                if(!fruitSpawned && fruits <= level && pillsLeft <= 240 - 30 &&  rand() % 1500 == 0)
                     spawnFruit();
             }
             else

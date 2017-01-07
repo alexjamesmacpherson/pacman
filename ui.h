@@ -98,6 +98,7 @@ void drawNumberAsSprite(int number)
 
 /**
  * Draw game score and any previously attained high score
+ * Note: maximum drawable score is 99,999 to prevent overflowing atop other parts of the UI
  */
 void drawScore()
 {
@@ -108,10 +109,10 @@ void drawScore()
     drawSprite(score_tex, 80, 8, 0);    // Draw SCORE tooltip at current location
 
     translateMapCoords(4,-1);           // Translate to point above map at which the high score should be drawn
-    drawNumberAsSprite(highscore);      // Draw high score sprites at current location
+    drawNumberAsSprite(min(highscore,99999));   // Draw high score sprites at current location
 
     translateMapCoords(6,0);            // Translate to point above map at which the score should be drawn
-    drawNumberAsSprite(score);          // Draw score sprites at current location
+    drawNumberAsSprite(min(score,99999));   // Draw score sprites at current location
 
     glPopMatrix();
 }
