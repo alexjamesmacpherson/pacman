@@ -339,7 +339,7 @@ public:
      * @param p2 - Vector storing the x,y map coordinates of the second point
      * @return -   Straight line distance between p1 and p2, floating point precision
      */
-    float distanceBetween(std::vector<int> p1, std::vector<int> p2)
+    float distanceBetween(vector<int> p1, vector<int> p2)
     {
         float d_x = p1[0] - p2[0];
         float d_y = p1[1] - p2[1];
@@ -357,9 +357,9 @@ public:
      * @param target - Vector storing the x,y map coordinates of the target tile
      * @return -       Direction of shortest straight line distance to target
      */
-    direction targetTile(std::vector<int> target)
+    direction targetTile(vector<int> target)
     {
-        std::vector<int> next_pos;  // Initialise next position, updated in each possible direction
+        vector<int> next_pos;  // Initialise next position, updated in each possible direction
         float distance = 999;       // Set max distance to unreachable value
         direction newDir;           // Initialise returned direction
 
@@ -426,7 +426,7 @@ public:
      */
     void aiScatter()
     {
-        std::vector<int> target;
+        vector<int> target;
         switch(colour)              // Each colour selects a unique corner to target
         {
             case RED:
@@ -448,9 +448,9 @@ public:
      * @param offsetSize - Size of offset to apply
      * @return -           New target vector, accounting for offset
      */
-    std::vector<int> targetPacmanOffsetBy(int offsetSize)
+    vector<int> targetPacmanOffsetBy(int offsetSize)
     {
-        std::vector<int> offset = {pacman.getX(), pacman.getY()};
+        vector<int> offset = {pacman.getX(), pacman.getY()};
         switch(pacman.getDirection())   // Apply offset to correct coordinate based on Pacman's direction
         {
             case UP:
@@ -482,8 +482,8 @@ public:
      */
     void aiChase(Ghost redGhost)
     {
-        std::vector<int> target = {pacman.getX(), pacman.getY()};   // Default target for RED and (sometimes) YELLOW
-        std::vector<int> current_pos = {getX(), getY()};            // Current position, stored as vector
+        vector<int> target = {pacman.getX(), pacman.getY()};   // Default target for RED and (sometimes) YELLOW
+        vector<int> current_pos = {getX(), getY()};            // Current position, stored as vector
         int d_x;    // Delta X initialised for use in BLUE's targeting
         int d_y;    // Delta Y initialised for use in BLUE's targeting
 
@@ -529,7 +529,7 @@ public:
      */
     void aiDead()
     {
-        std::vector<int> target = {14, 19};     // Coordinate directly above SPAWN entrance
+        vector<int> target = {14, 19};     // Coordinate directly above SPAWN entrance
         dir = targetTile(target);
         setSpeed(200);
     }

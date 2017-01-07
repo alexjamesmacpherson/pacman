@@ -50,7 +50,7 @@ void drawNumberAsSprite(int number)
 {
     glPushMatrix();
 
-    std::string str = std::to_string(number);   // Convert number to string to allow iteration
+    string str = to_string(number);   // Convert number to string to allow iteration
     for(int i = str.length() - 1; i >= 0; i--)  // Draw each digit as an individual sprite
     {
         switch(str[i])
@@ -199,12 +199,12 @@ void drawQuit()
  */
 void getHighscore()
 {
-    std::fstream file("highscore.txt");
+    fstream file("highscore.txt");
     if(file.good())
         file >> highscore;
     else
     {
-        std::ofstream newFile("highscore.txt");
+        ofstream newFile("highscore.txt");
         newFile << 0;
         newFile.close();
     }
@@ -217,7 +217,7 @@ void getHighscore()
  */
 void setHighscore()
 {
-    std::ofstream file("highscore.txt");
+    ofstream file("highscore.txt");
     file.clear();
     file << highscore;
     file.close();

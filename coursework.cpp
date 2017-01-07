@@ -16,6 +16,7 @@
 #include <png.h>
 #include <vector>
 #include <fstream>
+using namespace std;    // No need to write std::-bla all the time
 
 // Lab header files
 #include "png_load.h"
@@ -172,7 +173,7 @@ void checkCollisions()
             else if(ghosts[i].getAI() == FRIGHTENED)    // If ghost is FRIGHTENED, it can be eaten itself
             {                                           // Set ghost AI to DEAD, increasing the score and count of ghosts eaten since the last big pill
                 ghosts[i].setAI(DEAD, false);            // Briefly pause the game to show score for eating ghost
-                score += 200 * pow(2, std::min(ghostsEaten++, 4));
+                score += 200 * pow(2, min(ghostsEaten++, 4));
                 timestamp = ticks;
                 pacman.stopChomping();
                 mode = EAT;
