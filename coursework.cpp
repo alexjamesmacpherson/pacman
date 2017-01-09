@@ -234,7 +234,7 @@ void aiWave()
  * Compute all game logic prior to redrawing anything
  * Logic to compute varies on gamemode
  */
-void idle()
+void gameLoop()
 {
     // Perform certain logic depending on game mode
     switch(mode)
@@ -448,14 +448,14 @@ void special(int key, int, int)
 }
 
 /**
- * Handler to pause the game (halt the idle function) when minimised
+ * Handler to pause the game (halt the gameLoop function) when minimised
  *
  * @param vis - window visibility, defined as a GLUT variable
  */
 void visibility(int vis)
 {
     if (vis==GLUT_VISIBLE)
-        glutIdleFunc(idle);
+        glutIdleFunc(gameLoop);
     else
         glutIdleFunc(NULL);
 }
@@ -474,7 +474,7 @@ void init()
     gluOrtho2D(0, 300, 0, 300);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);   // Set background to black
     loadBindTextures();                     // Load and bind all textures to be used later as sprites
-    getHighscore();
+    getHighscore();                         // Retrieve high score from local file, if it exists, otherwise init file with value 0
 }
 
 /**
