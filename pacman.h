@@ -11,10 +11,6 @@ extern int pillsLeft;
 extern int fruits;
 extern bool fruitSpawned;
 
-// Enum defines possible movement directions, defined as new type for usability
-typedef enum {NONE, UP, RIGHT, DOWN, LEFT} direction;
-
-
 /**
  * For ease of reference and handling Pacman, he is defined as an object type
  * All variables are private, not needing to be accessed externally
@@ -388,5 +384,8 @@ public:
         glPopMatrix();
     }
 };
+
+// Initialise Pacman object
+Pacman pacman;
 
 #endif //COURSEWORK_PACMAN_H

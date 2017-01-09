@@ -10,12 +10,8 @@ extern int ticks;
 extern int ghostsEaten;
 extern Pacman pacman;
 
-// Enum defines possible ghost colours, defined as new type for usability
-typedef enum {RED, PINK, BLUE, YELLOW} color;
-// Enum defines possible ghost movement types, defined as new type for usability
-typedef enum {CHASE, SCATTER, FRIGHTENED, DEAD, LEAVE, SPAWN} movement;
-extern movement wave;   // Allow access of wave-defined AI targeting mode from main file
-// Direction enum already declared in Pacman.h; no need to redeclare type
+// Ghost AI targeting is wave-based, varying between CHASE and SCATTER over time
+movement wave = SCATTER;
 
 /**
  * For ease of reference and handling ghosts, they are defined as an object type
@@ -769,5 +765,50 @@ public:
             draw();     // If the ghost hasn't just been eaten, draw it as normal
     }
 };
+
+// Initialise array of ghosts, passing starting positions and colour
+Ghost ghosts[4] =
+        {
+                Ghost(13.5,19,RED),
+                Ghost(13.5,16,PINK),
+                Ghost(11.5,16,BLUE),
+                Ghost(15.5,16,YELLOW)
+        };
+
+/**
+ * Ghost AI targeting mode is set in waves, adding small respite where all enemies back off for a short period
+ * Timings of each wave are roughly:
+ *      SCATTER:    480 ticks       (begin at ticks =  240 - PLAY-mode start)
+ *      CHASE:      900 ticks       (begin at ticks =  720)
+ *      SCATTER:    300 ticks       (begin at ticks = 1620)
+ *      CHASE:      900 ticks       (begin at ticks = 1920)
+ *      SCATTER:    180 ticks       (begin at ticks = 2820)
+ *      CHASE:      900 ticks       (begin at ticks = 3000)
+ *      SCATTER:    180 ticks       (begin at ticks = 3900)
+ *      CHASE:      indefinitely    (begin at ticks = 4100)
+ * On changing wave, the ghost's direction is reversed
+ */
+void aiWave()
+{
+    bool waveChanged = false;   // Flag to only update AI on a wave change - prevents constantly switching direction as wave is updated every tick
+    movement thisWave = wave;
+    if(ticks == 720 || ticks == 1920 || ticks == 3000 || ticks == 4100)
+    {
+        waveChanged = true;
+        wave = CHASE;
+    }
+    else if(ticks == 1620 || ticks == 2820 || ticks == 3900)
+    {
+        waveChanged = true;
+        wave = SCATTER;
+    }
+
+    // Set new wave for all ghosts only if they are currently in a wave-based mode
+    for(int i = 0; i < 4; i++)
+    {
+        if(waveChanged && ghosts[i].getAI() == thisWave)
+            ghosts[i].setAI(wave, true);
+    }
+}
 
 #endif //COURSEWORK_GHOSTS_H

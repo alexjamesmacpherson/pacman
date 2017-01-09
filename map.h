@@ -13,22 +13,6 @@ extern int ticks;
 extern int fruits;
 extern bool fruitSpawned;
 
-/**
- * Tile types defined as enum:
- *      W: Wall
- *      G: Gate
- *      P: Portal
- *      n: Non-Filled Path
- *      o: Pill
- *      e: Eaten Pill
- *      O: Big Pill
- *      E: Eaten Big Pill
- *      F: Fruit
- * Tile is defined as new type for ease of use.
- * Each tile-type is used to determine behaviour of Pacman & Ghosts.
- */
-typedef enum {W, G, P, n, o, e, O, E, F} tile;
-
 /// TILES: 8x8, SPRITES: 14x14, MAP: 224x248, WINDOW: 300x300 - map starts at (38,26), ends at (262,274)
 // 2D tile array stores game map
 tile map[28][31] =
