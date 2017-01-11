@@ -1,0 +1,21 @@
+PROJECT = pacman
+
+CXXFLAGS= -O3  -std=c++11
+LDFLAGS= $(CXXFLAGS) $(LIBDIRS)
+LDLIBS = -lfreeglut -lopengl32 -lglu32  -lm -lpng
+
+SRCS = pacman.cpp
+
+OBJS =  $(SRCS:.cpp=.o)
+
+CXX = g++
+
+default: $(PROJECT)
+
+$(PROJECT):  $(OBJS)
+	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+clean:
+	-@rm $(OBJS) $(PROGRAM_NAME).exe
+
+.PHONY: default clean

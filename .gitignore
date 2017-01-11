@@ -1,4 +1,6 @@
 *.exe
 *.txt
+*.o
 .idea/
 cmake-build-debug/
+Makefile

@@ -3,8 +3,8 @@
  * All enums are declared using typedef, defining them as new types for usability
  */
 
-#ifndef COURSEWORK_TYPES_H
-#define COURSEWORK_TYPES_H
+#ifndef PACMAN_TYPES_H
+#define PACMAN_TYPES_H
 
 /**
  * Tile types defined as enum:
@@ -45,4 +45,4 @@ typedef enum {CHASE, SCATTER, FRIGHTENED, DEAD, LEAVE, SPAWN} movement;
  */
 typedef enum {READY, PLAY, FRUIT, EAT, PAUSE, DEATH, GAMEOVER} gamemode;
 
-#endif //COURSEWORK_TYPES_H
+#endif //PACMAN_TYPES_H

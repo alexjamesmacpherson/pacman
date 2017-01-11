@@ -1,14 +1,21 @@
-LDLIBS = -lglut -lGL -lGLU  -lm -lpng -lX11
+PROJECT = pacman
 
 CXXFLAGS= -O3  -std=c++11 -I/modules/cs324/glew-1.11.0/include
 LDFLAGS= $(CXXFLAGS) $(LIBDIRS) -L/usr/X11R6/lib -L/modules/cs324/glew-1.11.0/lib -Wl,-rpath=/modules/cs324/glew-1.11.0/lib
+LDLIBS = -lglut -lGL -lGLU  -lm -lpng -lX11
 
-TARGETS = 
-
-SRCS = 
+SRCS = pacman.cpp
 
 OBJS =  $(SRCS:.cpp=.o)
 
 CXX = g++
 
-default: $(TARGETS)
+default: $(PROJECT)
+
+$(PROJECT):  $(OBJS)
+	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+clean:
+	-@rm $(OBJS) $(PROGRAM_NAME)
+
+.PHONY: default clean

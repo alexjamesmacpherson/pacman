@@ -2,8 +2,8 @@
  * Header file responsible for drawing all UI elements. Also reads/writes high score to file.
  */
 
-#ifndef COURSEWORK_UI_H
-#define COURSEWORK_UI_H
+#ifndef PACMAN_UI_H
+#define PACMAN_UI_H
 
 // Allow access of score, level, lives and fruits consumed from globals.h
 extern int score;
@@ -243,4 +243,4 @@ void drawFruits()
     glPopMatrix();
 }
 
-#endif //COURSEWORK_UI_H
+#endif //PACMAN_UI_H

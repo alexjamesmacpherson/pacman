@@ -5,8 +5,8 @@
  * This original code can be found commented out at the bottom of this file.
  */
 
-#ifndef COURSEWORK_MAP_H
-#define COURSEWORK_MAP_H
+#ifndef PACMAN_MAP_H
+#define PACMAN_MAP_H
 
 // Allow access of ticks and fruit count from globals.h
 extern int ticks;
@@ -297,4 +297,4 @@ void drawGate()
 }
 */
 
-#endif //COURSEWORK_MAP_H
+#endif //PACMAN_MAP_H

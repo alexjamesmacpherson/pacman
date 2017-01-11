@@ -2,8 +2,8 @@
  * Header file responsible for drawing and handling Ghosts
  */
 
-#ifndef COURSEWORK_GHOSTS_H
-#define COURSEWORK_GHOSTS_H
+#ifndef PACMAN_GHOSTS_H
+#define PACMAN_GHOSTS_H
 
 // Allow access of ticks, eaten ghost count and Pacman from globals.h
 extern int ticks;
@@ -865,4 +865,4 @@ void aiWave()
     }
 }
 
-#endif //COURSEWORK_GHOSTS_H
+#endif //PACMAN_GHOSTS_H

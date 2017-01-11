@@ -2,8 +2,8 @@
  * Header file responsible for binding, storing and drawing all textures.
  */
 
-#ifndef COURSEWORK_TEXTURES_H
-#define COURSEWORK_TEXTURES_H
+#ifndef PACMAN_TEXTURES_H
+#define PACMAN_TEXTURES_H
 
 /** Texture Storage **/
 // Map Textures
@@ -199,4 +199,4 @@ void drawSprite(unsigned int texture, int length, int height, float angle)
     glPopMatrix();
 }
 
-#endif //COURSEWORK_TEXTURES_H
+#endif //PACMAN_TEXTURES_H

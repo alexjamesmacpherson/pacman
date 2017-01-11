@@ -9,15 +9,25 @@ There are a couple of dependencies required to compile and run the project.
 ## Compiling the Project
 #### Windows:
 The project was developed on Windows, requiring MingW64 (Git BASH) to both compile and run. To compile the project:
-> make -f Makefile coursework
+> make -f Makefile.windows pacman
 
 #### Linux:
 A slightly modified Makefile is required to compile on Linux:
-> make -f Makefile.linux coursework
+> make -f Makefile.linux pacman
+
+#### Additional Info:
+Alternatively, a symbolic link can be created to the Makefile, removing the need to type *-f Makefile.foo* every time the project is compiled:
+> ln -fs Makefile.foo Makefile
+
+Replace *foo* with **windows** or **linux** depending on the compiling OS. The project can then be easily compiled using:
+> make pacman
+
+The flag *-B* forces a recompile, if required:
+> make pacman -B
 
 ## Running the Project:
 Once the code is compiled, the game is started using the same command on all systems.
-> ./coursework
+> ./pacman
 
 ## Playing the Game:
 1. The game is controlled by keyboard input only:
@@ -34,4 +44,5 @@ Once the code is compiled, the game is started using the same command on all sys
 
 ## Note:
 **I don't own, nor claim to own, Pac-Man.**
+
 This project surmised a piece of university coursework which I'm pretty proud of.

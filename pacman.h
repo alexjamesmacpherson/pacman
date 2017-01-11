@@ -2,8 +2,8 @@
  * Header file responsible for drawing and handling Pacman
  */
 
-#ifndef COURSEWORK_PACMAN_H
-#define COURSEWORK_PACMAN_H
+#ifndef PACMAN_PACMAN_H
+#define PACMAN_PACMAN_H
 
 // Allow access of ticks, count of remaining pills, number of fruits eaten and fruit spawned flag from globals.h
 extern int ticks;
@@ -364,4 +364,4 @@ public:
 // Initialise Pacman object
 Pacman pacman;
 
-#endif //COURSEWORK_PACMAN_H
+#endif //PACMAN_PACMAN_H

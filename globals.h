@@ -3,8 +3,8 @@
  * Contents include a number of game loop-based functions, moved from the main file to improve readability of code
  */
 
-#ifndef COURSEWORK_GLOBALS_H
-#define COURSEWORK_GLOBALS_H
+#ifndef PACMAN_GLOBALS_H
+#define PACMAN_GLOBALS_H
 
 // Game ticks, effectively enacting a frame counter
 int ticks = 0;
@@ -169,4 +169,4 @@ void drawCharacters()
         ghosts[i].draw();
 }
 
-#endif //COURSEWORK_GLOBALS_H
+#endif //PACMAN_GLOBALS_H
