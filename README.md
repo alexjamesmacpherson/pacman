@@ -8,7 +8,7 @@ There are a couple of dependencies required to compile and run the project.
 
 ## Compiling the Project
 #### Windows:
-The project was developed on Windows, requiring MingW64 (Git BASH) to both compile and run. To compile the project:
+The project was developed on Windows, requiring MinGW *(or another UNIX-like terminal environment)* to both compile and run. To compile the project:
 > make -f Makefile.windows pacman
 
 #### Linux:
@@ -19,7 +19,7 @@ A slightly modified Makefile is required to compile on Linux:
 Alternatively, a symbolic link can be created to the Makefile, removing the need to type *-f Makefile.foo* every time the project is compiled:
 > ln -fs Makefile.foo Makefile
 
-Replace *foo* with **windows** or **linux** depending on the compiling OS. The project can then be easily compiled using:
+Replace **foo** with *windows* or *linux* depending on the compiling OS. The project can then be easily compiled using:
 > make pacman
 
 The flag *-B* forces a recompile, if required:
