@@ -5,7 +5,7 @@
 #ifndef COURSEWORK_GHOSTS_H
 #define COURSEWORK_GHOSTS_H
 
-// Allow access of ticks, eaten ghost count and Pacman from main file
+// Allow access of ticks, eaten ghost count and Pacman from globals.h
 extern int ticks;
 extern int ghostsEaten;
 extern Pacman pacman;
@@ -150,7 +150,8 @@ public:
      */
     bool atTileCenter()
     {
-        return (int)round(y * 10.0f) % 10 == 0 && (int)round(x * 10.0f) % 10 == 0;
+        int mod = 1/d_pos;
+        return (int)round(y * mod) % mod == 0 && (int)round(x * mod) % mod == 0;
     }
 
     /**
@@ -225,6 +226,23 @@ public:
     }
 
     /**
+     * Timeout set independently from AI, ensuring all ghosts carry the same timeout value
+     *
+     * This is necessary for how timeout is reset - take the following scenario:
+     *      Pacman eats a big pill and all ghosts enter FRIGHTENED
+     *      A ghost is eaten and will no longer register as FRIGHTENED
+     *      Another big pill is eaten while this ghost is dead, timeout is set to 0 for all living ghosts as they enter/remain FRIGHTENED
+     *      When the ghost respawns, it's timer is now ahead of all other FRIGHTENED ghosts
+     *      When its timer expires, the eaten ghost count is reset, removing any score multiplier accrued even though other ghosts remain FRIGHTENED
+     *
+     * Obviously, this is a very rare case, but separating the timeout being set to zero prevents it occurring
+     */
+    void zeroTimeout()
+    {
+        timeout = 0;    // FRIGHTENED mode requires a timeout to ensure ghosts don't remain FRIGHTENED indefinitely
+    }
+
+    /**
      * Update the ghost's AI movement mode, reversing its direction on doing so if required
      *
      * @param newAI - AI movement type for ghost to now use
@@ -237,7 +255,6 @@ public:
         // Some AI modes have additional cases to account for
         if(newAI == FRIGHTENED)
         {
-            timeout = 0;        // FRIGHTENED mode requires a timeout to ensure ghosts don't remain FRIGHTENED indefinitely
             setSpeed(40);       // FRIGHTENED ghosts also move at 50% speed
         }
         else if(newAI == DEAD)
@@ -491,8 +508,8 @@ public:
                 break;
             case BLUE:
                 target = targetPacmanOffsetBy(2);   // Start by finding the point 2 tiles ahead of Pacman in his direction of movement
-                d_x = redGhost.getX() - target[0];  // Find the X difference between this point and RED ghost
-                d_y = redGhost.getY() - target[1];  // Find the Y difference between this point and RED ghost
+                d_x = target[0] - redGhost.getX();  // Find the X difference between this point and RED ghost
+                d_y = target[1] - redGhost.getY();  // Find the Y difference between this point and RED ghost
                 // BLUE's target is then twice the change in X and Y from RED's position
                 target = {redGhost.getX() + 2 * d_x, redGhost.getY() + 2 * d_y};
                 break;
@@ -674,27 +691,26 @@ public:
 
         // Determine which colour ghost to draw and whether it is the alternate texture (wiggle animation)
         unsigned int ghost_tex;
+        int ghostAlt = floor(tex_count % 20 / 10);
         if(ai == FRIGHTENED)    // If in FRIGHTENED mode, draw the correct skin
         {
             if(timeout >= 480 && tex_count % 30 >= 15)  // Draw white (flashing) skin when FRIGHTENED mode is nearing its end
-            {
-                ghost_tex = tex_count % 20 < 10 ? ghost_flee_2_tex : ghost_flee_3_tex;
-            }
+                ghost_tex = ghost_f_tex[ghostAlt + 2];
             else
-                ghost_tex = tex_count % 20 < 10 ? ghost_flee_0_tex : ghost_flee_1_tex;
+                ghost_tex = ghost_f_tex[ghostAlt];
         }
         else if(ai != DEAD)
         {
             switch(colour)      // If not in FRIGHTENED or DEAD AI, draw the ghost according to colour
             {
                 case RED:
-                    ghost_tex = tex_count % 20 < 10 ? ghost_r_0_tex : ghost_r_1_tex; break;
+                    ghost_tex = ghost_r_tex[ghostAlt]; break;
                 case PINK:
-                    ghost_tex = tex_count % 20 < 10 ? ghost_p_0_tex : ghost_p_1_tex; break;
+                    ghost_tex = ghost_p_tex[ghostAlt]; break;
                 case BLUE:
-                    ghost_tex = tex_count % 20 < 10 ? ghost_b_0_tex : ghost_b_1_tex; break;
+                    ghost_tex = ghost_b_tex[ghostAlt]; break;
                 case YELLOW:
-                    ghost_tex = tex_count % 20 < 10 ? ghost_y_0_tex : ghost_y_1_tex; break;
+                    ghost_tex = ghost_y_tex[ghostAlt]; break;
             }
         }
 
@@ -743,21 +759,10 @@ public:
             glTranslatef(-4.0f, 0.0f, 0.0f);    // Account for over-sized sprite (16x8 on 8x8 tile)
 
             // Determine which score sprite to draw based on the number of ghosts eaten since the last big pill was eaten
-            unsigned int score_tex;
-            switch(ghostsEaten)
-            {
-                case 1:
-                    score_tex = score_200_tex;  break;
-                case 2:
-                    score_tex = score_400_tex;  break;
-                case 3:
-                    score_tex = score_800_tex;  break;
-                default:
-                    score_tex = score_1600_tex; break;
-            }
+            int ghostScore = min(ghostsEaten - 1, 3);
 
             // Draw correct score sprite at current location
-            drawSprite(score_tex, 16, 8, 0);
+            drawSprite(g_scores_tex[ghostScore], 16, 8, 0);
 
             glPopMatrix();
         }
@@ -777,36 +782,85 @@ Ghost ghosts[4] =
 
 /**
  * Ghost AI targeting mode is set in waves, adding small respite where all enemies back off for a short period
- * Timings of each wave are roughly:
- *      SCATTER:    480 ticks       (begin at ticks =  240 - PLAY-mode start)
- *      CHASE:      900 ticks       (begin at ticks =  720)
- *      SCATTER:    300 ticks       (begin at ticks = 1620)
- *      CHASE:      900 ticks       (begin at ticks = 1920)
- *      SCATTER:    180 ticks       (begin at ticks = 2820)
- *      CHASE:      900 ticks       (begin at ticks = 3000)
- *      SCATTER:    180 ticks       (begin at ticks = 3900)
- *      CHASE:      indefinitely    (begin at ticks = 4100)
+ * Timings of each wave are calculated as tick approximations of seconds, based on a performance-capped 30fps tick rate
+ * Tick count is adjusted as game does not begin until 240 ticks have passed
+ *      SCATTER:    420  ticks      approx.  7 seconds
+ *                      Above level 5, this decreases to 300 ticks      approx. 5 seconds
+ *      CHASE:      1200 ticks      approx. 20 seconds
+ *      SCATTER:    420  ticks      approx.  7 seconds
+ *                      Above level 5, this decreases to 300 ticks      approx. 5 seconds
+ *      CHASE:      1200 ticks      approx. 20 seconds
+ *      SCATTER:    300  ticks      approx.  5 seconds
+ *      CHASE:      1200 ticks      approx. 20 seconds
+ *                      Above level 2, this extends to 61980 ticks      approx. 1033s/17m13s
+ *                      Above level 5, this increases to 62220 ticks    approx. 1037s/17m17s
+ *      SCATTER:    300  ticks      approx.  5 seconds
+ *                      Above level 2, this decreases to 1 tick         approx. 1/60th of a second
+ *      CHASE:      indefintely beyond this point
  * On changing wave, the ghost's direction is reversed
  */
 void aiWave()
 {
-    bool waveChanged = false;   // Flag to only update AI on a wave change - prevents constantly switching direction as wave is updated every tick
-    movement thisWave = wave;
-    if(ticks == 720 || ticks == 1920 || ticks == 3000 || ticks == 4100)
-    {
-        waveChanged = true;
-        wave = CHASE;
-    }
-    else if(ticks == 1620 || ticks == 2820 || ticks == 3900)
-    {
-        waveChanged = true;
-        wave = SCATTER;
-    }
+    // Account for game not entering PLAY-mode until ticks=240
+    int playTicks = ticks - 240;
+    // SCATTER: 7s, or 5s if level 2+
+    int wave1;
+    if(level >= 5)
+        wave1 = 5*60;
+    else
+        wave1 = 7*60;
+    // CHASE: 20s
+    int wave2 = wave1 + 20*60;
+    // SCATTER: 7s, or 5s if level 2+
+    int wave3;
+    if(level >= 5)
+        wave3 = wave2 + 5*60;
+    else
+        wave3 = wave2 + 7*60;
+    // CHASE: 20s
+    int wave4 = wave3 + 20*60;
+    // SCATTER: 5s
+    int wave5 = wave4 + 5*60;
+    // CHASE: 20s, or 17m13s if level 2+, or 17m17s if level 5+
+    int wave6;
+    if(level >= 5)
+        wave6 = wave5 + 1037*60;
+    else if(level >= 2)
+        wave6 = wave5 + 1033*60;
+    else
+        wave6 = wave5 + 20*60;
+    // SCATTER: 5s, or 1/60s (one frame - simply forces direction switch) if level 2+
+    int wave7;
+    if(level >= 2)
+        wave7 = wave6 + 1;
+    else
+        wave7 = wave6 + 5*60;
+    // CHASE permanently beyond this point
 
-    // Set new wave for all ghosts only if they are currently in a wave-based mode
+    // Change AI wave based on game ticks (performance-capped approximation of time)
+    if(playTicks <= wave1)
+        wave = SCATTER;
+    else if(playTicks <= wave2)
+        wave = CHASE;
+    else if(playTicks <= wave3)
+        wave = SCATTER;
+    else if(playTicks <= wave4)
+        wave = CHASE;
+    else if(playTicks <= wave5)
+        wave = SCATTER;
+    else if(playTicks <= wave6)
+        wave = CHASE;
+    else if(playTicks <= wave7)
+        wave = SCATTER;
+    else
+        wave = CHASE;
+
+    // Update ghost AI to new wave only if they are in CHASE/SCATTER mode
+    // Checked every frame to ensure ghost AI correctly reset following FRIGHTENED mode
     for(int i = 0; i < 4; i++)
     {
-        if(waveChanged && ghosts[i].getAI() == thisWave)
+        movement ai = ghosts[i].getAI();
+        if((ai == SCATTER || ai == CHASE) && ai != wave)
             ghosts[i].setAI(wave, true);
     }
 }

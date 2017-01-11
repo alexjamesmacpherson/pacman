@@ -5,7 +5,7 @@
 #ifndef COURSEWORK_PACMAN_H
 #define COURSEWORK_PACMAN_H
 
-// Allow access of ticks, count of remaining pills, number of fruits eaten and fruit spawned flag from main file
+// Allow access of ticks, count of remaining pills, number of fruits eaten and fruit spawned flag from globals.h
 extern int ticks;
 extern int pillsLeft;
 extern int fruits;
@@ -330,36 +330,12 @@ public:
         glTranslatef(-3.0f, -4.0f, 0.0f);   // Account for over-sized sprite (15x15 on 8x8 tile)
 
         // Determine which texture to draw based on tick-incremented counter
-        unsigned int dead_tex;
-        switch((int)floor(dead_tex_count / 5))
-        {
-            case 0:
-                dead_tex = dead_0_tex;  break;
-            case 1:
-                dead_tex = dead_1_tex;  break;
-            case 2:
-                dead_tex = dead_2_tex;  break;
-            case 3:
-                dead_tex = dead_3_tex;  break;
-            case 4:
-                dead_tex = dead_4_tex;  break;
-            case 5:
-                dead_tex = dead_5_tex;  break;
-            case 6:
-                dead_tex = dead_6_tex;  break;
-            case 7:
-                dead_tex = dead_7_tex;  break;
-            case 8:
-                dead_tex = dead_8_tex;  break;
-            case 9:
-                dead_tex = dead_9_tex;  break;
-            case 10:
-                dead_tex = dead_10_tex; break;
-        }
+        int deadFrame = (int)floor(dead_tex_count / 5);
+        unsigned int pacman_tex = dead_tex[deadFrame];
 
         // Draw current sprite of Pacman's death animation sequence
         if(dead_tex_count < 55)
-            drawSprite(dead_tex, 15, 15, 0);
+            drawSprite(pacman_tex, 15, 15, 0);
 
         // Increment dead texture counter
         dead_tex_count++;

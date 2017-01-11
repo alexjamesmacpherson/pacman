@@ -9,36 +9,19 @@
 // Map Textures
 unsigned int map_tex;           // Map
 unsigned int pill_tex;          // Small Pill
-unsigned int bigPill_tex;       // Big Pill
+unsigned int bigPill_tex[2];    // Array storing both big pill textures (flashes, changing size)
 // Pacman Textures
 unsigned int pac_0_tex;         // Open Mouth
 unsigned int pac_1_tex;         // Half Mouth
 unsigned int pac_2_tex;         // Closed Mouth
-// Pacman Death Textures - each texture is next frame in death animation sequence
-unsigned int dead_0_tex;
-unsigned int dead_1_tex;
-unsigned int dead_2_tex;
-unsigned int dead_3_tex;
-unsigned int dead_4_tex;
-unsigned int dead_5_tex;
-unsigned int dead_6_tex;
-unsigned int dead_7_tex;
-unsigned int dead_8_tex;
-unsigned int dead_9_tex;
-unsigned int dead_10_tex;
+// Pacman Death Textures
+unsigned int dead_tex[11];      // Array storing all death animation frames
 // Ghost Textures
-unsigned int ghost_r_0_tex;     // Red ghost
-unsigned int ghost_r_1_tex;     // Red ghost     (alt)
-unsigned int ghost_p_0_tex;     // Pink ghost
-unsigned int ghost_p_1_tex;     // Pink ghost    (alt)
-unsigned int ghost_b_0_tex;     // Blue ghost
-unsigned int ghost_b_1_tex;     // Blue ghost    (alt)
-unsigned int ghost_y_0_tex;     // Yellow ghost
-unsigned int ghost_y_1_tex;     // Yellow ghost  (alt)
-unsigned int ghost_flee_0_tex;  // Fleeing ghost
-unsigned int ghost_flee_1_tex;  // Fleeing ghost (alt)
-unsigned int ghost_flee_2_tex;  // Fleeing ghost (white)
-unsigned int ghost_flee_3_tex;  // Fleeing ghost (white alt)
+unsigned int ghost_r_tex[2];    // Array storing red        ghost sprites
+unsigned int ghost_p_tex[2];    // Array storing pink       ghost sprites
+unsigned int ghost_b_tex[2];    // Array storing blue       ghost sprites
+unsigned int ghost_y_tex[2];    // Array storing yellow     ghost sprites
+unsigned int ghost_f_tex[4];    // Array storing frightened ghost sprites
 // Eye Textures
 unsigned int eye_u_tex;         // Eyes facing UP
 unsigned int eye_r_tex;         // Eyes facing RIGHT
@@ -58,10 +41,7 @@ unsigned int num_6_tex;         // Number 6
 unsigned int num_7_tex;         // Number 7
 unsigned int num_8_tex;         // Number 8
 unsigned int num_9_tex;         // Number 9
-unsigned int score_200_tex;     // Score 200  (eaten 1 ghost)
-unsigned int score_400_tex;     // Score 400  (eaten 2 ghosts)
-unsigned int score_800_tex;     // Score 800  (eaten 3 ghosts)
-unsigned int score_1600_tex;    // Score 1600 (eaten 4 ghosts)
+unsigned int g_scores_tex[4];   // Array of scores for eating a ghost
 unsigned int one_up_tex;        // 1UP       tooltip
 unsigned int score_tex;         // SCORE     tooltip
 unsigned int ready_tex;         // READY!    tooltip
@@ -84,37 +64,38 @@ void loadBindTextures()
 
     // Bind map textures
     map_tex =           load_and_bind_texture("sprites/map/map.png");
-    pill_tex =          load_and_bind_texture("sprites/map/p-0.png");
-    bigPill_tex =       load_and_bind_texture("sprites/map/p-1.png");
+    pill_tex =          load_and_bind_texture("sprites/map/pill.png");
+    bigPill_tex[0] =    load_and_bind_texture("sprites/map/big-0.png");
+    bigPill_tex[1] =    load_and_bind_texture("sprites/map/big-1.png");
     // Bind Pacman textures
     pac_0_tex =         load_and_bind_texture("sprites/pacman/0.png");
     pac_1_tex =         load_and_bind_texture("sprites/pacman/1.png");
     pac_2_tex =         load_and_bind_texture("sprites/pacman/2.png");
     // Bind Pacman Death textures
-    dead_0_tex =        load_and_bind_texture("sprites/pacman/d-0.png");
-    dead_1_tex =        load_and_bind_texture("sprites/pacman/d-1.png");
-    dead_2_tex =        load_and_bind_texture("sprites/pacman/d-2.png");
-    dead_3_tex =        load_and_bind_texture("sprites/pacman/d-3.png");
-    dead_4_tex =        load_and_bind_texture("sprites/pacman/d-4.png");
-    dead_5_tex =        load_and_bind_texture("sprites/pacman/d-5.png");
-    dead_6_tex =        load_and_bind_texture("sprites/pacman/d-6.png");
-    dead_7_tex =        load_and_bind_texture("sprites/pacman/d-7.png");
-    dead_8_tex =        load_and_bind_texture("sprites/pacman/d-8.png");
-    dead_9_tex =        load_and_bind_texture("sprites/pacman/d-9.png");
-    dead_10_tex =       load_and_bind_texture("sprites/pacman/d-10.png");
+    dead_tex[0] =       load_and_bind_texture("sprites/pacman/d-0.png");
+    dead_tex[1] =       load_and_bind_texture("sprites/pacman/d-1.png");
+    dead_tex[2] =       load_and_bind_texture("sprites/pacman/d-2.png");
+    dead_tex[3] =       load_and_bind_texture("sprites/pacman/d-3.png");
+    dead_tex[4] =       load_and_bind_texture("sprites/pacman/d-4.png");
+    dead_tex[5] =       load_and_bind_texture("sprites/pacman/d-5.png");
+    dead_tex[6] =       load_and_bind_texture("sprites/pacman/d-6.png");
+    dead_tex[7] =       load_and_bind_texture("sprites/pacman/d-7.png");
+    dead_tex[8] =       load_and_bind_texture("sprites/pacman/d-8.png");
+    dead_tex[9] =       load_and_bind_texture("sprites/pacman/d-9.png");
+    dead_tex[10] =      load_and_bind_texture("sprites/pacman/d-10.png");
     // Bind ghost textures
-    ghost_r_0_tex =     load_and_bind_texture("sprites/ghosts/r-0.png");
-    ghost_r_1_tex =     load_and_bind_texture("sprites/ghosts/r-1.png");
-    ghost_p_0_tex =     load_and_bind_texture("sprites/ghosts/p-0.png");
-    ghost_p_1_tex =     load_and_bind_texture("sprites/ghosts/p-1.png");
-    ghost_b_0_tex =     load_and_bind_texture("sprites/ghosts/b-0.png");
-    ghost_b_1_tex =     load_and_bind_texture("sprites/ghosts/b-1.png");
-    ghost_y_0_tex =     load_and_bind_texture("sprites/ghosts/y-0.png");
-    ghost_y_1_tex =     load_and_bind_texture("sprites/ghosts/y-1.png");
-    ghost_flee_0_tex =  load_and_bind_texture("sprites/ghosts/f-0.png");
-    ghost_flee_1_tex =  load_and_bind_texture("sprites/ghosts/f-1.png");
-    ghost_flee_2_tex =  load_and_bind_texture("sprites/ghosts/f-2.png");
-    ghost_flee_3_tex =  load_and_bind_texture("sprites/ghosts/f-3.png");
+    ghost_r_tex[0] =    load_and_bind_texture("sprites/ghosts/r-0.png");
+    ghost_r_tex[1] =    load_and_bind_texture("sprites/ghosts/r-1.png");
+    ghost_p_tex[0] =    load_and_bind_texture("sprites/ghosts/p-0.png");
+    ghost_p_tex[1] =    load_and_bind_texture("sprites/ghosts/p-1.png");
+    ghost_b_tex[0] =    load_and_bind_texture("sprites/ghosts/b-0.png");
+    ghost_b_tex[1] =    load_and_bind_texture("sprites/ghosts/b-1.png");
+    ghost_y_tex[0] =    load_and_bind_texture("sprites/ghosts/y-0.png");
+    ghost_y_tex[1] =    load_and_bind_texture("sprites/ghosts/y-1.png");
+    ghost_f_tex[0] =    load_and_bind_texture("sprites/ghosts/f-0.png");
+    ghost_f_tex[1] =    load_and_bind_texture("sprites/ghosts/f-1.png");
+    ghost_f_tex[2] =    load_and_bind_texture("sprites/ghosts/f-2.png");
+    ghost_f_tex[3] =    load_and_bind_texture("sprites/ghosts/f-3.png");
     // Bind ghost eye textures
     eye_u_tex =         load_and_bind_texture("sprites/eyes/u.png");
     eye_r_tex =         load_and_bind_texture("sprites/eyes/r.png");
@@ -148,10 +129,10 @@ void loadBindTextures()
     num_7_tex =         load_and_bind_texture("sprites/ui/7.png");
     num_8_tex =         load_and_bind_texture("sprites/ui/8.png");
     num_9_tex =         load_and_bind_texture("sprites/ui/9.png");
-    score_200_tex =     load_and_bind_texture("sprites/ui/200.png");
-    score_400_tex =     load_and_bind_texture("sprites/ui/400.png");
-    score_800_tex =     load_and_bind_texture("sprites/ui/800.png");
-    score_1600_tex =    load_and_bind_texture("sprites/ui/1600.png");
+    g_scores_tex[0] =   load_and_bind_texture("sprites/ui/200.png");
+    g_scores_tex[1] =   load_and_bind_texture("sprites/ui/400.png");
+    g_scores_tex[2] =   load_and_bind_texture("sprites/ui/800.png");
+    g_scores_tex[3] =   load_and_bind_texture("sprites/ui/1600.png");
     one_up_tex =        load_and_bind_texture("sprites/ui/1up.png");
     score_tex =         load_and_bind_texture("sprites/ui/score.png");
     ready_tex =         load_and_bind_texture("sprites/ui/ready.png");

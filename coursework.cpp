@@ -79,7 +79,7 @@ void gameLoop()
                     ghosts[i].move(ghosts[0]);
                 // If no fruit is currently spawned, enough pills have been eaten,
                 // The eaten fruit count doesn't exceed the level and a random quantifier is satisfied, spawn a fruit
-                if(!fruitSpawned && fruits <= level && pillsLeft <= 240 - 30 &&  rand() % 1500 == 0)
+                if(!fruitSpawned && fruits < level && pillsLeft <= 240 - 30 &&  rand() % 1500 == 0)
                     spawnFruit();
             }
             else

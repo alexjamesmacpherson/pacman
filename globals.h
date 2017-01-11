@@ -22,7 +22,7 @@ gamemode tempMode;      // Save gamemode when pausing the game
 
 // Game score, level, remaining lives, extra life flag, remaining pills to be eaten, number of fruits consumed and fruit spawned flag all initialised
 int score = 0;
-int level = 0;
+int level = 1;
 int lives = 2;
 bool extraLife = false; // True if received
 int pillsLeft = 244;
@@ -60,7 +60,7 @@ void resetLevel()
 void restartGame()
 {
     score = 0;
-    level = 0;
+    level = 1;
     lives = 2;
     extraLife = false;
     pillsLeft = 244;
@@ -91,8 +91,9 @@ void checkCollisions()
     {
         for(int i = 0; i < 4; i++)
         {
+            ghosts[i].zeroTimeout();    // Reset ghost FRIGHT timeout
             if(ghosts[i].getAI() == wave || ghosts[i].getAI() == FRIGHTENED)
-                ghosts[i].setAI(FRIGHTENED, true);
+                ghosts[i].setAI(FRIGHTENED, true);  // Set AI to FRIGHTENED if possible
         }
     }
     else if(scoreIncrement >= 100)  // If score is increased by more than 100, a fruit has been eaten, pause game briefly to show score

@@ -5,7 +5,7 @@
 #ifndef COURSEWORK_UI_H
 #define COURSEWORK_UI_H
 
-// Allow access of score, level, lives and fruits consumed from main file
+// Allow access of score, level, lives and fruits consumed from globals.h
 extern int score;
 extern int level;
 extern int lives;

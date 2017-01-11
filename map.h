@@ -8,7 +8,7 @@
 #ifndef COURSEWORK_MAP_H
 #define COURSEWORK_MAP_H
 
-// Allow access of ticks and fruit count from main file
+// Allow access of ticks and fruit count from globals.h
 extern int ticks;
 extern int fruits;
 extern bool fruitSpawned;
@@ -167,7 +167,7 @@ void drawFruit(int x, int y)
     glTranslatef(-3.0f, -3.0f, 0.0f);   // Account for over-sized sprite (14x14 on 8x8 tile)
 
     // Determine which fruit sprite to draw from the array based on current fruit consumption count
-    drawSprite(fruits_tex[fruits], 14, 14, 0);   // Draw fruit at current location
+    drawSprite(fruits_tex[fruits], 14, 14, 0);  // Draw fruit at current location
 
     glPopMatrix();
 }
@@ -187,16 +187,17 @@ void drawMap()
 
         for(int y=0;y<31;y++)
         {
-            switch(getTile(x,y))           // Draw pills as sprites
+            // Determine size of big pills to draw depending on ticks
+            int bigPill = floor(ticks % 40 / 20);
+
+            switch(getTile(x,y))    // Draw pills as sprites
             {
                 case o:
                     drawSprite(pill_tex, 8, 8, 0); break;
                 case O:
-                    if(ticks % 60 < 30)     // Set big pill sprite to flash depending on ticks
-                        drawSprite(bigPill_tex, 8, 8, 0);
-                    break;
+                    drawSprite(bigPill_tex[bigPill], 8, 8, 0); break;   // Draw big pill of determined size
                 case F:
-                    drawFruit(x,y); break;  // Determine which fruit should be drawn at current location
+                    drawFruit(x,y); break;  // Method to determine which fruit should be drawn at current location
             }
             translateMapCoords(0,1);    // Increment Y pos
         }
