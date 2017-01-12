@@ -1,5 +1,5 @@
 # Pac-Man (CS324)
-Computer Graphics coursework, recreating Pac-Man in C++ from OpenGL first principles.
+Computer Graphics coursework, recreating Pac-Man in C++ from OpenGL first principles. For more info, please refer to the [project report](https://github.com/alexjamesmacpherson/pacman/blob/master/Report.pdf/ "View Report").
 
 ## Dependencies
 There are a couple of dependencies required to compile and run the project.
