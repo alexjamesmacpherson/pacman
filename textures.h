@@ -10,11 +10,11 @@
 unsigned int map_tex;           // Map
 unsigned int pill_tex;          // Small Pill
 unsigned int bigPill_tex[2];    // Array storing both big pill textures (flashes, changing size)
-// Pacman Textures
+// Pac-Man Textures
 unsigned int pac_0_tex;         // Open Mouth
 unsigned int pac_1_tex;         // Half Mouth
 unsigned int pac_2_tex;         // Closed Mouth
-// Pacman Death Textures
+// Pac-Man Death Textures
 unsigned int dead_tex[11];      // Array storing all death animation frames
 // Ghost Textures
 unsigned int ghost_r_tex[2];    // Array storing red        ghost sprites
@@ -67,11 +67,11 @@ void loadBindTextures()
     pill_tex =          load_and_bind_texture("sprites/map/pill.png");
     bigPill_tex[0] =    load_and_bind_texture("sprites/map/big-0.png");
     bigPill_tex[1] =    load_and_bind_texture("sprites/map/big-1.png");
-    // Bind Pacman textures
+    // Bind Pac-Man textures
     pac_0_tex =         load_and_bind_texture("sprites/pacman/0.png");
     pac_1_tex =         load_and_bind_texture("sprites/pacman/1.png");
     pac_2_tex =         load_and_bind_texture("sprites/pacman/2.png");
-    // Bind Pacman Death textures
+    // Bind Pac-Man Death textures
     dead_tex[0] =       load_and_bind_texture("sprites/pacman/d-0.png");
     dead_tex[1] =       load_and_bind_texture("sprites/pacman/d-1.png");
     dead_tex[2] =       load_and_bind_texture("sprites/pacman/d-2.png");

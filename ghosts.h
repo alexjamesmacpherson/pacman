@@ -5,7 +5,7 @@
 #ifndef PACMAN_GHOSTS_H
 #define PACMAN_GHOSTS_H
 
-// Allow access of ticks, eaten ghost count and Pacman from globals.h
+// Allow access of ticks, eaten ghost count and Pac-Man from globals.h
 extern int ticks;
 extern int ghostsEaten;
 extern Pacman pacman;
@@ -229,7 +229,7 @@ public:
      * Timeout set independently from AI, ensuring all ghosts carry the same timeout value
      *
      * This is necessary for how timeout is reset - take the following scenario:
-     *      Pacman eats a big pill and all ghosts enter FRIGHTENED
+     *      Pac-Man eats a big pill and all ghosts enter FRIGHTENED
      *      A ghost is eaten and will no longer register as FRIGHTENED
      *      Another big pill is eaten while this ghost is dead, timeout is set to 0 for all living ghosts as they enter/remain FRIGHTENED
      *      When the ghost respawns, it's timer is now ahead of all other FRIGHTENED ghosts
@@ -365,7 +365,7 @@ public:
      *      The optimal direction is only updated should it prove closer than previously checked exits
      *
      * Note: this does not always give the shortest PATH to the target
-     *      However, this behaviour is as the original Pacman was designed
+     *      However, this behaviour is as the original Pac-Man was designed
      *
      * @param target - Vector storing the x,y map coordinates of the target tile
      * @return -       Direction of shortest straight line distance to target
@@ -456,7 +456,7 @@ public:
     }
 
     /**
-     * Calculate a target as Pacman's position +- an offset of given size in Pacman's direction of movement
+     * Calculate a target as Pac-Man's position +- an offset of given size in Pac-Man's direction of movement
      *
      * @param offsetSize - Size of offset to apply
      * @return -           New target vector, accounting for offset
@@ -484,14 +484,14 @@ public:
 
     /**
      * CHASE mode AI is different for every ghost colour:
-     *      RED:    Targets and chases Pacman
-     *      PINK:   Targets four tiles ahead of Pacman in his direction of movement, attempting an ambush tactic
+     *      RED:    Targets and chases Pac-Man
+     *      PINK:   Targets four tiles ahead of Pac-Man in his direction of movement, attempting an ambush tactic
      *      BLUE:   The most complex AI type (explained below) often acts somewhat erratically
-     *              However, if RED is closely chasing Pacman, BLUE will generally also be in pursuit:
-     *                      Find point two tiles ahead of Pacman
+     *              However, if RED is closely chasing Pac-Man, BLUE will generally also be in pursuit:
+     *                      Find point two tiles ahead of Pac-Man
      *                      Find vector from RED ghost to this point
      *                      Double this vector - the point at the end of this doubled vector is the target
-     *      YELLOW: Targets and chases Pacman as RED does until within 8 tiles range, then emulating SCATTER behaviour
+     *      YELLOW: Targets and chases Pac-Man as RED does until within 8 tiles range, then emulating SCATTER behaviour
      */
     void aiChase(Ghost redGhost)
     {
@@ -503,18 +503,18 @@ public:
         // Determine ghost chasing behaviour based on their colour
         switch(colour)
         {
-            case PINK:                              // PINK looks ahead of Pacman and tries to ambush him
-                target = targetPacmanOffsetBy(4);   // Update target to reflect offset in Pacman's direction of movement
+            case PINK:                              // PINK looks ahead of Pac-Man and tries to ambush him
+                target = targetPacmanOffsetBy(4);   // Update target to reflect offset in Pac-Man's direction of movement
                 break;
             case BLUE:
-                target = targetPacmanOffsetBy(2);   // Start by finding the point 2 tiles ahead of Pacman in his direction of movement
+                target = targetPacmanOffsetBy(2);   // Start by finding the point 2 tiles ahead of Pac-Man in his direction of movement
                 d_x = target[0] - redGhost.getX();  // Find the X difference between this point and RED ghost
                 d_y = target[1] - redGhost.getY();  // Find the Y difference between this point and RED ghost
                 // BLUE's target is then twice the change in X and Y from RED's position
                 target = {redGhost.getX() + 2 * d_x, redGhost.getY() + 2 * d_y};
                 break;
             case YELLOW:
-                if(distanceBetween(current_pos, target) <= 8)   // If YELLOW is closer than 8 tiles to Pacman, he chases as RED does
+                if(distanceBetween(current_pos, target) <= 8)   // If YELLOW is closer than 8 tiles to Pac-Man, he chases as RED does
                     target = {0, -2};                           // If closer than 8 tiles, it emulates SCATTER AI behaviour
                 break;
         }
@@ -635,9 +635,9 @@ public:
             {
                 case SCATTER:       // Scatter all ghosts to each of the four corners
                     aiScatter();        break;
-                case CHASE:         // Target and hunt Pacman, passing RED ghost for BLUE's AI
+                case CHASE:         // Target and hunt Pac-Man, passing RED ghost for BLUE's AI
                     aiChase(redGhost);  break;
-                case FRIGHTENED:    // Flee from Pacman randomly
+                case FRIGHTENED:    // Flee from Pac-Man randomly
                     aiFrightened();     break;
                 case DEAD:
                     aiDead();           break;

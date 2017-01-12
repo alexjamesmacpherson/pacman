@@ -18,7 +18,7 @@
  *      E: Eaten Big Pill
  *      F: Fruit
  * Tile is defined as new type for ease of use.
- * Each tile-type is used to determine behaviour of Pacman & Ghosts.
+ * Each tile-type is used to determine behaviour of Pac-Man & Ghosts.
  */
 typedef enum {W, G, P, n, o, e, O, E, F} tile;
 
@@ -38,7 +38,7 @@ typedef enum {CHASE, SCATTER, FRIGHTENED, DEAD, LEAVE, SPAWN} movement;
  *      FRUIT:    Pause game briefly during play upon eating a fruit
  *      EAT:      Pause game briefly during play upon eating a ghost - the two differ only in what is drawn
  *      PAUSE:    Game is paused, draw help screen
- *      DEATH:    Pacman has been eaten, play death sequence
+ *      DEATH:    Pac-Man has been eaten, play death sequence
  *      GAMEOVER: Game is over, display GAME OVER text until quit/restart
  * Gamemode is defined as new type for ease of use.
  * Default starting mode is READY

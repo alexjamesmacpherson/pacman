@@ -70,8 +70,8 @@ void gameLoop()
         case PLAY:      // Main play loop
             if(timestamp == -1)         // If timestamp is not set, execute all PLAY-mode logic
             {
-                checkCollisions();      // Check Pacman's collisions with pills and ghosts
-                pacman.move();          // Move Pacman
+                checkCollisions();      // Check Pac-Man's collisions with pills and ghosts
+                pacman.move();          // Move Pac-Man
                 checkCollisions();      // Check collisions again to ensure simultaneous tile switches register correct collisions
                 aiWave();               // Update the ghost AI targeting wave
                 // Move each ghost - pass RED ghost for BLUE's CHASE mode AI
@@ -85,7 +85,7 @@ void gameLoop()
             else
             {
                 if(ticks == timestamp + 90)     // If timestamp is set, incur a short pause
-                {                               // Timestamp is only set in PLAY-mode when Pacman dies or level is complete
+                {                               // Timestamp is only set in PLAY-mode when Pac-Man dies or level is complete
                     if(pillsLeft == 0)          // If no pills remain, level is complete
                     {                           // Reset map & pill count and enter READY-mode for next level
                         pillsLeft = 244;
@@ -93,7 +93,7 @@ void gameLoop()
                         resetMap();
                         resetLevel();
                     }
-                    else                        // If there are still pills remaining, Pacman has died
+                    else                        // If there are still pills remaining, Pac-Man has died
                     {
                         timestamp = ticks;      // Set timestamp for correct death animation timing
                         mode = DEATH;           // Enter DEATH-mode
@@ -223,7 +223,7 @@ void keyboard(unsigned char key, int, int) {
 }
 void special(int key, int, int)
 {
-    // Update Pacman's direction, pause/unpause or restart game depending on game mode
+    // Update Pac-Man's direction, pause/unpause or restart game depending on game mode
     if(mode == PLAY || mode == EAT || mode == READY)    // Update direction if game is currently playable
     {
         switch (key)

@@ -226,7 +226,7 @@ void setHighscore()
 }
 
 /**
- * Draw the fruits Pacman has already eaten, displayed beneath the map
+ * Draw the fruits Pac-Man has already eaten, displayed beneath the map
  */
 void drawFruits()
 {

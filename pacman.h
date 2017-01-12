@@ -1,5 +1,5 @@
 /**
- * Header file responsible for drawing and handling Pacman
+ * Header file responsible for drawing and handling Pac-Man
  */
 
 #ifndef PACMAN_PACMAN_H
@@ -12,14 +12,14 @@ extern int fruits;
 extern bool fruitSpawned;
 
 /**
- * For ease of reference and handling Pacman, he is defined as an object type
+ * For ease of reference and handling Pac-Man, he is defined as an object type
  * All variables are private, not needing to be accessed externally
  * If variables are externally required, getters and setters are provided
  */
 class Pacman
 {
 private:
-    /// List of private variables which Pacman uses
+    /// List of private variables which Pac-Man uses
     float x;                // X position relative to map - float allows for smooth movement between tiles
     float y;                // Y position relative to map - float allows for smooth movement between tiles
     float angle;            // Angle at which to draw the sprite - class var to retain angle when dir=NONE
@@ -28,7 +28,7 @@ private:
     direction saveDir;      // Secondary direction storage for stopping and starting animation
     int tex_count;          // Counter to determine which texture to draw
     float dead_tex_count;   // Counter to determine which sprite of death animation sequence to draw
-    bool ready;             // Flag prevents incorrect Pacman texture or position rounding at start of game
+    bool ready;             // Flag prevents incorrect Pac-Man texture or position rounding at start of game
 
 public:
     /**
@@ -58,7 +58,7 @@ public:
     }
 
     /**
-     * Determines and returns absolute X coordinate of map tile on which Pacman resides
+     * Determines and returns absolute X coordinate of map tile on which Pac-Man resides
      *
      * @return - integer, X coordinate of current tile
      */
@@ -68,7 +68,7 @@ public:
     }
 
     /**
-     * Determines and returns absolute Y coordinate of map tile on which Pacman resides
+     * Determines and returns absolute Y coordinate of map tile on which Pac-Man resides
      *
      * @return - integer, Y coordinate of current tile
      */
@@ -102,9 +102,9 @@ public:
     }
 
     /**
-     * Determines whether Pacman is currently at the center of a tile
+     * Determines whether Pac-Man is currently at the center of a tile
      * Expression basically validates that the first decimal point of each coordinate is a zero
-     * If each is a zero, Pacman is at the center of his tile
+     * If each is a zero, Pac-Man is at the center of his tile
      *
      * @return - boolean, true if at center
      */
@@ -114,7 +114,7 @@ public:
     }
 
     /**
-     * Return Pacman's current direction
+     * Return Pac-Man's current direction
      *
      * @return - direction of movement
      */
@@ -124,7 +124,7 @@ public:
     }
 
     /**
-     * Set Pacman's next direction to the given input.
+     * Set Pac-Man's next direction to the given input.
      *
      * @param d - direction in which to face when possible
      */
@@ -134,15 +134,15 @@ public:
     }
 
     /**
-     * Method handles all movement functionality of Pacman, updating his position and direction
+     * Method handles all movement functionality of Pac-Man, updating his position and direction
      *
      * Directional updates occur under the following cases:
      *      If at tile center and proposed new direction is not a WALL or GATE, update current direction
      *      If at tile center and the current direction results in a wall collision, stop moving
      *
-     * With any direction changes complete, move Pacman in current direction by set amount (10% of tile)
+     * With any direction changes complete, move Pac-Man in current direction by set amount (10% of tile)
      *      Every movement rounds the unchanged position coordinate, preventing buggy direction change detection
-     *      If not moving, round both position coordinates to ensure Pacman is at tile center
+     *      If not moving, round both position coordinates to ensure Pac-Man is at tile center
      */
     void move()
     {
@@ -155,7 +155,7 @@ public:
             else if(isImpassible(getNextTile(dir))) // If the current direction is impassible, set dir=NONE
                 dir = NONE;
         }
-        // The only exception to the above rule is at game start (when ready=false), as Pacman starts between two tiles
+        // The only exception to the above rule is at game start (when ready=false), as Pac-Man starts between two tiles
         if(!ready && tempDir != NONE && !isImpassible(getNextTile(tempDir)))
         {
             dir = tempDir;
@@ -184,8 +184,8 @@ public:
                 x -= 0.1f;
                 y = round(y);
                 break;
-            default:                // If not moving, round both coordinates, centering Pacman within the tile
-                if(ready)           // Only do if Pacman has already moved (ready=true)
+            default:                // If not moving, round both coordinates, centering Pac-Man within the tile
+                if(ready)           // Only do if Pac-Man has already moved (ready=true)
                 {                   // This allows starting X position to be non-rounded
                     x = round(x);
                     y = round(y);
@@ -197,7 +197,7 @@ public:
     /**
      * "Eat" the current tile:
      *      Pill: empty the array position appropriately, reduce remaining pill count and return score
-     *      Portal: teleport to the opposite portal based on Pacman's direction of movement
+     *      Portal: teleport to the opposite portal based on Pac-Man's direction of movement
      *      Fruit: increment consumed fruit count, empty array position and determine & return how much the fruit is worth
      * Only eat current tile if at tile center
      *
@@ -251,7 +251,7 @@ public:
     }
 
     /**
-     * Draw Pacman at his current location
+     * Draw Pac-Man at his current location
      */
     void draw()
     {
@@ -287,7 +287,7 @@ public:
         else
             pacman_tex = pac_2_tex;
 
-        // Draw Pacman sprite with determined texture at determined angle
+        // Draw Pac-Man sprite with determined texture at determined angle
         drawSprite(pacman_tex, 13, 13, angle);
 
         // Increment texture counter only if moving
@@ -299,7 +299,7 @@ public:
     }
 
     /**
-     * Stop Pacman's eating animation when he dies/completes level or pause it upon eating a ghost - also save tempDir
+     * Stop Pac-Man's eating animation when he dies/completes level or pause it upon eating a ghost - also save tempDir
      */
     void stopChomping()
     {
@@ -309,7 +309,7 @@ public:
     }
 
     /**
-     * Restart Pacman's eating animation, resetting tempDir if it hasn't since been changed
+     * Restart Pac-Man's eating animation, resetting tempDir if it hasn't since been changed
      */
     void startChomping()
     {
@@ -319,7 +319,7 @@ public:
     }
 
     /**
-     * Draw Pacman's death animation sequence at his current location
+     * Draw Pac-Man's death animation sequence at his current location
      */
     void drawDead()
     {
@@ -333,7 +333,7 @@ public:
         int deadFrame = (int)floor(dead_tex_count / 5);
         unsigned int pacman_tex = dead_tex[deadFrame];
 
-        // Draw current sprite of Pacman's death animation sequence
+        // Draw current sprite of Pac-Man's death animation sequence
         if(dead_tex_count < 55)
             drawSprite(pacman_tex, 15, 15, 0);
 
@@ -344,7 +344,7 @@ public:
     }
 
     /**
-     * Upon eating a fruit, draw the score for eating said fruit during the short pause INSTEAD of drawing Pacman
+     * Upon eating a fruit, draw the score for eating said fruit during the short pause INSTEAD of drawing Pac-Man
      */
     void drawFruitScore()
     {
@@ -361,7 +361,7 @@ public:
     }
 };
 
-// Initialise Pacman object
+// Initialise Pac-Man object
 Pacman pacman;
 
 #endif //PACMAN_PACMAN_H

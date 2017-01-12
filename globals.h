@@ -18,7 +18,7 @@ int timestamp = -1;
 
 // Game mode initialised to READY
 gamemode mode = READY;
-gamemode tempMode;      // Save gamemode when pausing the game
+gamemode tempMode;      // Save game mode when pausing the game
 
 // Game score, level, remaining lives, extra life flag, remaining pills to be eaten, number of fruits consumed and fruit spawned flag all initialised
 int score = 0;
@@ -35,7 +35,7 @@ int ghostsEaten = 0;
 /**
  * Reset level:
  *      Set ticks, timestamp, eaten ghost count and fruit spawned flag to initial values
- *      Call reset() method on Pacman and all Ghosts
+ *      Call reset() method on Pac-Man and all Ghosts
  *      Enter READY mode
  * This function is called when advancing level, resetting a level on death, or when restarting the game
  */
@@ -55,7 +55,7 @@ void resetLevel()
 /**
  * Called when any key is pressed
  * As mode=GAMEOVER, restart the game by resetting all variables to initial values
- * Also reset map, Pacman and ghosts to default
+ * Also reset map, Pac-Man and ghosts to default
  */
 void restartGame()
 {
@@ -71,13 +71,13 @@ void restartGame()
 
 /**
  * Check all possible collisions:
- *      Call Pacman to eat its current tile, incrementing score accordingly
+ *      Call Pac-Man to eat its current tile, incrementing score accordingly
  *       - If all pills are eaten, move to the next level
  *       - Once score exceeds 10,000, award a bonus life
  *       - On eating a big pill, set ghosts to FRIGHTENED
  *       - Release ghosts from the SPAWN pen after a specific number of pills have been eaten
  *       - If a fruit is eaten, pause the game briefly to display the score for eating it
- *      Check whether Pacman has collided with a ghost
+ *      Check whether Pac-Man has collided with a ghost
  *       - Set mode=DEATH if collision has occurred with alive ghost
  *       - If the ghost is frightened, eat it (set AI=DEAD)
  */
@@ -110,7 +110,7 @@ void checkCollisions()
         extraLife = true;
     }
 
-    // If all pills have been eaten, stop Pacman's animation and set timestamp to restart level after short pause
+    // If all pills have been eaten, stop Pac-Man's animation and set timestamp to restart level after short pause
     if(pillsLeft == 0)
     {
         timestamp = ticks;
@@ -128,8 +128,8 @@ void checkCollisions()
     {
         if(ghosts[i].getX() == pacman.getX() && ghosts[i].getY() == pacman.getY())
         {
-            if(ghosts[i].getAI() == wave)   // If the ghost is alive and not FRIGHTENED, Pacman will die
-            {                               // Begin DEATH procedure by setting timestamp and stopping Pacman's animation
+            if(ghosts[i].getAI() == wave)   // If the ghost is alive and not FRIGHTENED, Pac-Man will die
+            {                               // Begin DEATH procedure by setting timestamp and stopping Pac-Man's animation
                 timestamp = ticks;
                 pacman.stopChomping();
                 break;
@@ -147,7 +147,7 @@ void checkCollisions()
 }
 
 /**
- * Method tidies up display() switch on gamemode, drawing common PLAY-mode features
+ * Method tidies up display() switch on game mode, drawing common PLAY-mode features
  */
 void drawPlayScreen()
 {
@@ -160,7 +160,7 @@ void drawPlayScreen()
 }
 
 /**
- * Method tidies up display() switch on gamemode, drawing characters
+ * Method tidies up display() switch on game mode, drawing characters
  */
 void drawCharacters()
 {

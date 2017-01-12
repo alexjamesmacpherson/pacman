@@ -122,7 +122,7 @@ void resetMap()
 }
 
 /**
- * When Pacman dies, remove any spawned fruits from the map
+ * When Pac-Man dies, remove any spawned fruits from the map
  */
 void resetFruit()
 {
