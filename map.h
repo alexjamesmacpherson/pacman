@@ -2,7 +2,6 @@
  * Header file responsible for storing and drawing the game map.
  *
  * Initially, map was drawn using GL_LINE_LOOPs etc. but textures provided a more authentic look.
- * This original code can be found commented out at the bottom of this file.
  */
 
 #ifndef PACMAN_MAP_H
@@ -12,6 +11,9 @@
 extern int ticks;
 extern int fruits;
 extern bool fruitSpawned;
+
+// Fruit timer incremented with each frame - fruit is removed after approx 10s if not eaten
+int fruitTimer = -1;
 
 /// TILES: 8x8, SPRITES: 14x14, MAP: 224x248, WINDOW: 300x300 - map starts at (38,26), ends at (262,274)
 // 2D tile array stores game map
@@ -152,24 +154,35 @@ void spawnFruit()
         y = rand() % 10 + 1;    // Generate random Y within the lower third of the map (excluding outer walls)
     } while(getTile(x,y) != e); // Randomly selected tile must be empty
 
-    // Once randomly selected tile is empty, spawn fruit
+    // Once randomly selected tile is empty, spawn fruit and set timer to 0
     setTile(x,y,F);
     fruitSpawned = true;
+    fruitTimer = 0;
 }
 
 /**
  * Determine which fruit to draw based on how many have already been consumed
+ * If the timer exceeds 600 ticks (approx 15s) remove the fruit and reset the timer
  */
 void drawFruit(int x, int y)
 {
-    glPushMatrix();
+    if(fruitTimer <= 900)
+    {
+        glPushMatrix();
 
-    glTranslatef(-3.0f, -3.0f, 0.0f);   // Account for over-sized sprite (14x14 on 8x8 tile)
+        glTranslatef(-3.0f, -3.0f, 0.0f);   // Account for over-sized sprite (14x14 on 8x8 tile)
 
-    // Determine which fruit sprite to draw from the array based on current fruit consumption count
-    drawSprite(fruits_tex[fruits], 14, 14, 0);  // Draw fruit at current location
+        // Determine which fruit sprite to draw from the array based on current fruit consumption count
+        drawSprite(fruits_tex[fruits], 14, 14, 0);  // Draw fruit at current location
 
-    glPopMatrix();
+        glPopMatrix();
+        fruitTimer++;
+    }
+    else
+    {
+        setTile(x,y,e);
+        fruitTimer = -1;
+    }
 }
 
 /**
@@ -207,94 +220,5 @@ void drawMap()
     }
     glPopMatrix();
 }
-
-/**
- * Original map-drawing code; calls to each method were made in the drawMap() method.
- *
-// Methods draw the given edge of the wall
-void drawTop()
-{
-    static float vertex[2][2] =
-            {
-                    {0, 10},
-                    {10, 10}
-            };
-    drawLine(vertex);
-}
-void drawRight()
-{
-    static float vertex[2][2] =
-            {
-                    {10, 0},
-                    {10, 10}
-            };
-    drawLine(vertex);
-}
-void drawBottom()
-{
-    static float vertex[2][2] =
-            {
-                    {0, 0},
-                    {10, 0}
-            };
-    drawLine(vertex);
-}
-void drawLeft()
-{
-    static float vertex[2][2] =
-            {
-                    {0, 0},
-                    {0, 10}
-            };
-    drawLine(vertex);
-}
-
-// Calculate which sides of wall to draw; fill wall
-void drawWall(int x, int y)
-{
-    // Wall tile background
-    rgb(0,5,20);    // Set fill colour to very dark blue
-    static float vertex[4][2] =
-            {
-                    {0, 0},
-                    {0, 10},
-                    {10, 10},
-                    {10, 0}
-            };
-
-    glBegin(GL_POLYGON);        // Filled polygon gives wall blocks background
-    for (size_t i=0;i<4;i++)
-        glVertex2fv(vertex[i]);
-    glEnd();
-
-    // Wall tile edges
-    glLineWidth(3.0f);
-    rgb(34,49,184);     // Set drawing colour to blue (real game wall colour)
-    if(y == 30 || map[x][y+1] != W)
-        drawTop();
-    if(x == 27 || map[x+1][y] != W)
-        drawRight();
-    if(y == 0 || map[x][y-1] != W)
-        drawBottom();
-    if(x == 0 || map[x-1][y] != W)
-        drawLeft();
-}
-
-// Method draws the ghost spawn gate
-void drawGate()
-{
-    glPushMatrix();
-    rgb(255,255,255);    // Set drawing colour to white
-    glTranslatef(0.0f, 5.0f, 0.0f);     // Transform to tile centre on Y axis
-    glLineWidth(7.0f);
-    static float vertex[2][2] =
-            {
-                    {0, 0},
-                    {10, 0}
-            };
-    drawLine(vertex);
-    glPopMatrix();
-}
-*/
 
 #endif //PACMAN_MAP_H
